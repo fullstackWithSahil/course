@@ -7,7 +7,7 @@ export default function Pricing() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">
-          Choose the Plan That's Right for You
+          Choose the Plan That&apos;s Right for You
         </h2>
 
         {/* Pricing Grid */}
