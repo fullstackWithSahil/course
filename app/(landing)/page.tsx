@@ -1,4 +1,3 @@
-"use client"
 import Hero from '@/components/landingPage/Hero';
 import Features from '@/components/landingPage/Features';
 import Benifits from '@/components/landingPage/Benifits';
@@ -12,8 +11,7 @@ import Navbar from "@/components/landingPage/Navbar";
 
 const Website = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar/>
+    <main>
       <Hero/>
       <Features/>
       <Benifits/>
@@ -21,8 +19,7 @@ const Website = () => {
       <Pricing/>
       <Faq/>
       <Cta/>
-      <Footer/>
-    </div>
+    </main>
   );
 };
 

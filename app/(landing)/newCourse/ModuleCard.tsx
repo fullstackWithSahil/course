@@ -7,6 +7,7 @@ import { useState, ChangeEvent } from "react";
 import { Module, Video, Action } from "./Context";
 import { Textarea } from "@/components/ui/textarea";
 import Assets from "./Assets";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ModuleCard({
   module,
@@ -15,6 +16,7 @@ export default function ModuleCard({
   module: Module;
   dispatch: React.Dispatch<Action>;
 }) {
+  const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -39,6 +41,13 @@ export default function ModuleCard({
   };
 
   const handleAddVideo = () => {
+    if(!imagePreview&&!videoPreview){
+      toast({
+        title:"Add the video and thumbnail",
+        description:"you have not added the video or the thumbnail",
+      })
+      return;
+    }
     if (videoTitle.trim() && videoDescription.trim()) {
       dispatch({
         type: "ADD_VIDEO",
