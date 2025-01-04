@@ -5,8 +5,13 @@ import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
 import { Module, useCourseContext } from "./Context";
 import ModuleCard from "./ModuleCard";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useAuth } from "@clerk/nextjs";
 
-export default function CourseBuilder() {
+export default function CourseBuilder({course}:{course:string}){
+  const {toast} = useToast();
+  const {userId} = useAuth();
   const [moduleName, setModuleName] = useState("");
   const {state,dispatch} = useCourseContext();
   const handleAddModule = () => {
@@ -19,9 +24,33 @@ export default function CourseBuilder() {
     }
   };
 
+  async function uplodeCourse(){
+    try {
+      const {data} = await axios.post("http://localhost:8080/api/newCourse",{
+        data:state,
+        teacher:userId,
+        course
+      });
+      console.log({
+        data:state,
+        teacher:userId,
+        course
+      })
+      toast(data);
+    } catch (error) {
+      toast({
+        title:"error uploding file",
+        description:"There was an error uplodng course try again later"
+      })
+    }
+  }
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Course Builder</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold mb-4">Course Builder</h1>
+        <Button onClick={uplodeCourse} variant={"secondary"}>Upload course</Button>
+      </div>
 
       {/* Add Module Section */}
       <div className="flex items-center gap-4 mb-6">

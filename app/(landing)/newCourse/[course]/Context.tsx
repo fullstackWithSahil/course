@@ -18,9 +18,7 @@ export type State = Module[];
 
 export type Action =
   | { type: "ADD_MODULE"; payload: { id: string; name: string } }
-  | { type: "REMOVE_MODULE"; payload: { id: string } }
   | { type: "ADD_VIDEO"; payload: { moduleId: string; video: Video } }
-  | { type: "REMOVE_VIDEO"; payload: { moduleId: string; videoId: string } }
   | { type: "UPDATE_MODULE_NAME"; payload: { id: string; name: string } }
   | {
       type: "UPDATE_VIDEO_DETAILS";
@@ -36,23 +34,10 @@ export function reducer(state: State, action: Action): State {
         ...state,
         { id: action.payload.id, name: action.payload.name, videos: [] },
       ];
-    case "REMOVE_MODULE":
-      return state.filter((module) => module.id !== action.payload.id);
     case "ADD_VIDEO":
       return state.map((module) =>
         module.id === action.payload.moduleId
           ? { ...module, videos: [...module.videos, action.payload.video] }
-          : module
-      );
-    case "REMOVE_VIDEO":
-      return state.map((module) =>
-        module.id === action.payload.moduleId
-          ? {
-              ...module,
-              videos: module.videos.filter(
-                (video) => video.id !== action.payload.videoId
-              ),
-            }
           : module
       );
     case "UPDATE_MODULE_NAME":

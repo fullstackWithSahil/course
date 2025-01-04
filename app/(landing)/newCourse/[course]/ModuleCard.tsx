@@ -1,13 +1,13 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Trash } from "lucide-react";
 import { useState, ChangeEvent } from "react";
 import { Module, Video, Action } from "./Context";
 import { Textarea } from "@/components/ui/textarea";
 import Assets from "./Assets";
 import { useToast } from "@/hooks/use-toast";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useAuth } from "@clerk/nextjs";
 
 export default function ModuleCard({
   module,
@@ -16,11 +16,16 @@ export default function ModuleCard({
   module: Module;
   dispatch: React.Dispatch<Action>;
 }) {
+  const {userId} = useAuth();
+  const key =`${userId}/${module.name}/lesson-${module.videos.length+1}`;
+  const supabase = createClientComponentClient();
   const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [video,setVideo] = useState<any>();
+  const [Thumbnail,setThumbnail] = useState<any>();
 
   const handleFileChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -32,15 +37,17 @@ export default function ModuleCard({
       reader.onloadend = () => {
         if (type === "image") {
           setImagePreview(reader.result as string);
+          setThumbnail(file);
         } else {
           setVideoPreview(reader.result as string);
+          setVideo(file);
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleAddVideo = () => {
+  const handleAddVideo = async() => {
     if(!imagePreview&&!videoPreview){
       toast({
         title:"Add the video and thumbnail",
@@ -64,6 +71,13 @@ export default function ModuleCard({
       setVideoDescription("");
       setImagePreview(null);
       setVideoPreview(null);
+      setVideo(null);
+      setThumbnail(null);
+      const courseDetails = await supabase.storage.from("courses").upload(key,video);
+      const thumbnailDetails = await supabase.storage.from("thumbnails").upload(key,Thumbnail);
+      if(courseDetails.error||thumbnailDetails.error){
+        console.log({courseDetails,thumbnailDetails});
+      }
     }
   };
 
@@ -72,16 +86,6 @@ export default function ModuleCard({
       <CardContent>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{module.name}</h2>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() =>
-              dispatch({ type: "REMOVE_MODULE", payload: { id: module.id } })
-            }
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            Remove
-          </Button>
         </div>
 
         {/* Add Video Section */}
@@ -111,18 +115,6 @@ export default function ModuleCard({
               <div>
                 <strong>{video.title}</strong>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  dispatch({
-                    type: "REMOVE_VIDEO",
-                    payload: { moduleId: module.id, videoId: video.id },
-                  })
-                }
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
             </li>
           ))}
         </ul>

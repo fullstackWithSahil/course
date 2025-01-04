@@ -4,7 +4,8 @@ import Maincontent from "./Maincontent";
 import Sidebar from "./Sidebar";
 import ContextWrapper from "./Context";
 
-export default function Page() {
+export default function Page({params}:{params:{course:string}}) {
+  const {course} = params;
   return (
     <ContextWrapper>
       <main className="relative h-screen">
@@ -25,7 +26,7 @@ export default function Page() {
           <Sidebar />
         </section>
         <section className="md:w-[calc(100vw-300px)] w-full mt-5 absolute top-0 bottom-0 right-0 overflow-y-scroll">
-          <Maincontent />
+          <Maincontent course={course} />
         </section>
       </main>
     </ContextWrapper>
