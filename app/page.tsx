@@ -1,13 +1,14 @@
 "use client"
-import Navbar from '@/components/landingPage/Navbar';
 import Hero from '@/components/landingPage/Hero';
 import Features from '@/components/landingPage/Features';
 import Benifits from '@/components/landingPage/Benifits';
-import Footer from '@/components/landingPage/Footer';
 import Pricing from '@/components/landingPage/Pricing';
 import Faq from '@/components/landingPage/Faq';
 import Testmonials from '@/components/landingPage/Testmonials';
 import Cta from '@/components/landingPage/Cta';
+import Footer from "@/components/landingPage/Footer";
+import Navbar from "@/components/landingPage/Navbar";
+
 
 const Website = () => {
   return (
