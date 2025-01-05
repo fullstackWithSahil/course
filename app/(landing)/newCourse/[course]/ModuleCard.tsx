@@ -12,12 +12,14 @@ import { useAuth } from "@clerk/nextjs";
 export default function ModuleCard({
   module,
   dispatch,
+  course
 }: {
   module: Module;
   dispatch: React.Dispatch<Action>;
+  course:string;
 }) {
   const {userId} = useAuth();
-  const key =`${userId}/${module.name}/lesson-${module.videos.length+1}`;
+  const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
   const supabase = createClientComponentClient();
   const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
@@ -64,6 +66,7 @@ export default function ModuleCard({
             id: Date.now().toString(),
             title: videoTitle,
             description: videoDescription,
+            url:key
           },
         },
       });

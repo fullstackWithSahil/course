@@ -6,6 +6,7 @@ import ContextWrapper from "./Context";
 
 export default function Page({params}:{params:{course:string}}) {
   const {course} = params;
+  course.replaceAll("%"," ")
   return (
     <ContextWrapper>
       <main className="relative h-screen">

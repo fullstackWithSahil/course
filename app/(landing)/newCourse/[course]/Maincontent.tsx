@@ -6,12 +6,12 @@ import { PlusIcon } from "lucide-react";
 import { Module, useCourseContext } from "./Context";
 import ModuleCard from "./ModuleCard";
 import { useToast } from "@/hooks/use-toast";
-import axios from "axios";
 import { useAuth } from "@clerk/nextjs";
+import supabaseClient from "@/lib/supabase";
 
 export default function CourseBuilder({course}:{course:string}){
   const {toast} = useToast();
-  const {userId} = useAuth();
+  const {userId,getToken} = useAuth();
   const [moduleName, setModuleName] = useState("");
   const {state,dispatch} = useCourseContext();
   const handleAddModule = () => {
@@ -24,24 +24,57 @@ export default function CourseBuilder({course}:{course:string}){
     }
   };
 
-  async function uplodeCourse(){
+  async function uploadCourse() {
     try {
-      const {data} = await axios.post("http://localhost:8080/api/newCourse",{
-        data:state,
-        teacher:userId,
-        course
-      });
-      console.log({
-        data:state,
-        teacher:userId,
-        course
-      })
-      toast(data);
-    } catch (error) {
+      // Get token and initialize Supabase client
+      const token = await getToken({ template: "supabase" });
+      if (!token) throw new Error("Failed to retrieve token");
+      const supabase = await supabaseClient(token);
+  
+      // Get course ID
+      const { data: courseId } = await supabase
+        .from("courses")
+        .select("id")
+        .eq("name", course);
+  
+      if (!courseId || courseId.length === 0) {
+        toast({
+          title: "Course not found",
+          description: "The specified course does not exist",
+        });
+        return;
+      }
+  
+      // Insert videos
+      await Promise.all(
+        state.map((mod) =>
+          Promise.all(
+            mod.videos.map((v,i) =>
+              supabase.from("videos").insert({
+                module: mod.name,
+                teacher: userId,
+                title: v.title,
+                description: v.description,
+                course: courseId[0].id,
+                lesson:i+1,
+                url: v.url
+              })
+            )
+          )
+        )
+      );
+  
+      // Success toast
       toast({
-        title:"error uploding file",
-        description:"There was an error uplodng course try again later"
-      })
+        title: "Course uploaded successfully",
+        description: "Your course was uploaded successfully",
+      });
+    } catch (error) {
+      console.error("Error uploading course:", error);
+      toast({
+        title: "Error uploading course",
+        description: "There was an error uploading the course. Please try again later.",
+      });
     }
   }
 
@@ -49,7 +82,7 @@ export default function CourseBuilder({course}:{course:string}){
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold mb-4">Course Builder</h1>
-        <Button onClick={uplodeCourse} variant={"secondary"}>Upload course</Button>
+        <Button onClick={uploadCourse} variant={"secondary"}>Upload course</Button>
       </div>
 
       {/* Add Module Section */}
@@ -72,6 +105,7 @@ export default function CourseBuilder({course}:{course:string}){
             key={module.id}
             module={module}
             dispatch={dispatch}
+            course={course}
           />
         ))}
       </div>
