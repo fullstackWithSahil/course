@@ -57,7 +57,7 @@ export default function CourseBuilder({course}:{course:string}){
                 description: v.description,
                 course: courseId[0].id,
                 lesson:i+1,
-                url: v.url
+                url: v.url+".mp4"
               })
             )
           )

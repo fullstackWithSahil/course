@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Wrench } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Home, MessageCircle, Search, User2, Wrench } from "lucide-react";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -29,16 +31,33 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   );
 }
 
+const tabs =[
+  {
+    label:"Home",
+    icon: <Home/>,
+    href:"/home",
+  },{
+    label:"Students",
+    icon: <User2/>,
+    href:"/students",
+  },{
+    label:"Chats",
+    icon: <MessageCircle/>,
+    href:"/chats",
+  },{
+    label:"Feedback",
+    icon: <Search/>,
+    href:"/settings",
+  }
+];
+
 function Sidebar() {
   return (
     <>
-      <Button>start</Button>
-      <Button>start</Button>
-      <Button>start</Button>
-      <Button>start</Button>
-      <Button>start</Button>
-      <Button>start</Button>
-      <Button>start</Button>
+    {tabs.map((tab,i) =><Link href={tab.href} key={i} className={cn(buttonVariants(),"w-3/4")}>
+      {tab.icon}
+      {tab.label}
+    </Link>)}
     </>
   );
 }

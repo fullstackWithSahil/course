@@ -21,6 +21,7 @@ import {ClerkProvider} from '@clerk/nextjs'
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/landingPage/Navbar";
 import Footer from "@/components/landingPage/Footer";
+
 export default function RootLayout({
   children,
 }: {
