@@ -1,3 +1,4 @@
+import { createClient } from "@/lib/server/supabase"
 import { StudentType, columns } from "./columns"
 import { DataTable } from "./data-table"
 
