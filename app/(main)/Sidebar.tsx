@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import sendDiscordMessage from "@/lib/discord";
 import { cn } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
 import { Dialog } from "@radix-ui/react-dialog";
 import { Home, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
 import Link from "next/link";
@@ -52,6 +53,29 @@ export default function Sidebar() {
     const [problem,setProblem] = useState("");
     const [email,setEmail] = useState("");
     const [name,setName] = useState("");
+    const [displayProblems,setDisplayProblems] = useState(false);
+    const [displayPhone,setDisplayPhone] = useState(false);
+
+    async function reportAProblem(){
+      const message = `someone has reported a problem:
+      email:${email}
+      problem:${problem}`;
+      await sendDiscordMessage(message);
+      setProblem("");
+      setEmail("");
+      setDisplayProblems(false);
+    }
+
+    async function requestACall(){
+      const message = `someone has requested for a call:
+      name:${name}
+      phoneNumber:${phoneNumber}`;
+      await sendDiscordMessage(message);
+      setName("");
+      setPhoneNumber("");
+      setDisplayPhone(false);
+    }
+
   return (
     <>
       {tabs.map((tab, i) => (
@@ -60,9 +84,9 @@ export default function Sidebar() {
           {tab.label}
         </Link>
       ))}
-      <Dialog>
+      <Dialog onOpenChange={setDisplayProblems} open={displayProblems}>
         <DialogTrigger asChild>
-          <Button variant={"destructive"} className="w-3/4" onClick={()=>sendDiscordMessage("hello")}>
+          <Button variant={"destructive"} className="w-3/4">
             <Settings />
             Report a problem
           </Button>
@@ -96,11 +120,12 @@ export default function Sidebar() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={reportAProblem}>Submit</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <Dialog>
+
+      <Dialog onOpenChange={setDisplayPhone} open={displayPhone}>
         <DialogTrigger asChild>
           <Button variant={"destructive"} className="w-3/4">
             <Phone />
@@ -139,7 +164,7 @@ export default function Sidebar() {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={requestACall}>Submit</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
