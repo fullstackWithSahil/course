@@ -39,7 +39,7 @@ const tabs = [
   {
     label: "Feedback",
     icon: <Search />,
-    href: "/settings",
+    href: "/feedback",
   },
   {
     label: "FAQ",
@@ -58,8 +58,9 @@ export default function Sidebar() {
 
     async function reportAProblem(){
       const message = `someone has reported a problem:
-      email:${email}
-      problem:${problem}`;
+email:${email}
+problem:${problem}
+------------------------------------------------------------------`;
       await sendDiscordMessage(message);
       setProblem("");
       setEmail("");
@@ -68,8 +69,9 @@ export default function Sidebar() {
 
     async function requestACall(){
       const message = `someone has requested for a call:
-      name:${name}
-      phoneNumber:${phoneNumber}`;
+name:${name}
+phoneNumber:${phoneNumber}
+----------------------------------------------------------`;
       await sendDiscordMessage(message);
       setName("");
       setPhoneNumber("");
