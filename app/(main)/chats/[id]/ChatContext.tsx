@@ -2,13 +2,14 @@
 
 import { createContext, Dispatch, ReactNode, useContext, useReducer } from "react";
 
-interface MessageType {
+export interface MessageType {
     id: number;
+    firstname: string|null;
+    course:number|null;
     profile: string;
-    user: string;
-    content: string;
-    timestamp: Date;
-    image?: string;
+    sender: string;
+    message: string;
+    created_at: Date;
     reactions: {
         heart: number;
         thumbsUp: number;
@@ -19,6 +20,7 @@ interface MessageType {
 
 type ActionTypes =
     | { type: "add_message"; payload: MessageType }
+    | { type: "add_many"; payload: MessageType[]}
     | { type: "delete_message"; payload: { id: number } }
     | { type: "add_reaction"; payload: { id: number; reaction: "heart" | "thumbsUp" | "thumbsDown" | "smile" } };
 
@@ -30,6 +32,9 @@ function reducer(state: MessageType[], action: ActionTypes): MessageType[] {
     switch (action.type) {
         case "add_message":
             return [...state, action.payload];
+        
+        case "add_many":
+            return [...state, ...action.payload];
 
         case "delete_message":
             return state.filter((message) => message.id !== action.payload.id);

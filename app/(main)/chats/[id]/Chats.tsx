@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -9,7 +9,10 @@ import {
   ThumbsDown,
   Smile,
 } from "lucide-react";
-import { useChats } from "./ChatContext";
+import { MessageType, useChats } from "./ChatContext";
+import { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import supabaseClient from "@/lib/supabase";
 
 export default function Chats() {
   const { messages, dispatch } = useChats();
@@ -20,6 +23,40 @@ export default function Chats() {
     dispatch({type:"add_reaction",payload:{id,reaction}})
   }
 
+  const {getToken,userId} = useAuth();
+  //useeffect to fetch initial messages
+  useEffect(()=>{
+    async function fetchChats(){
+      const token = await getToken({template:"supabase"});
+      const supabase = await supabaseClient(token);
+      const {data}= await supabase
+        .from("messages")
+        .select("*")
+        .eq("sender",userId!)
+        .eq("to",userId!);
+      if(!data) return;
+      dispatch({type:"add_many",payload:data as any});
+    }
+    fetchChats();
+  },[])
+
+  useEffect(()=>{
+    let channel: any;
+    let supabase: any;
+    async function subscribe(){
+      const token = await getToken({template:"supabase"});
+      supabase = await supabaseClient(token);
+      channel = supabase.channel("incomingMessages").on("postgres_changes",{
+        event:"INSERT",schema:"public",table:"messages"
+      },(payload:MessageType)=>{
+        console.log({payload});
+        dispatch({type:"add_message",payload})
+      }).subscribe();
+    }
+    subscribe();
+    return ()=> supabase.removeChannel(channel)
+  },[])
+
   return (
     <ScrollArea className="h-[400px] pr-4">
       {messages.map((message) => (
@@ -29,18 +66,17 @@ export default function Chats() {
               <AvatarImage
                 src={message.profile}
               />
-              <AvatarFallback>{message.user[0]}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <p className="font-semibold">{message.user}</p>
-              <p>{message.content}</p>
-              {message.image && (
+              <p className="font-semibold">{message.firstname}</p>
+              <p>{message.message}</p>
+              {/* {message.image && (
                 <img
                   src={message.image || "/placeholder.svg"}
                   alt="Uploaded content"
                   className="mt-2 max-w-full h-auto rounded"
                 />
-              )}
+              )} */}
               <div className="flex space-x-2 mt-2">
                 <Button
                   variant="outline"
