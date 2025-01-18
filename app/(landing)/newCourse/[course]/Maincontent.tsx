@@ -29,7 +29,7 @@ export default function CourseBuilder({course}:{course:string}){
       // Get token and initialize Supabase client
       const token = await getToken({ template: "supabase" });
       if (!token) throw new Error("Failed to retrieve token");
-      const supabase = await supabaseClient(token);
+      const supabase = supabaseClient(token);
   
       // Get course ID
       const { data: courseId } = await supabase
