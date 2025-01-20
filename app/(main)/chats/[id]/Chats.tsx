@@ -23,62 +23,45 @@ export default function Chats() {
   }
 
   useEffect(() => {
-    async function fetchChats() {
-      try {
-        const token = await getToken({ template: "supabase" });
-        const supabase = supabaseClient(token);
-        
-        const { data, error } = await supabase
-          .from("messages")
-          .select('*')
-          .or(`sender.eq.${userId},to.eq.${userId}`);
-        console.log({data})
-
-        if (error) throw error;
-        
-        if (data) {
-          dispatch({ type: "add_many", payload: data as any });
-        }
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-      }
-    }
-    
-    if (userId) {
-      fetchChats();
-    }
-  }, [getToken, userId, dispatch]);
-
-  useEffect(() => {
-    let channel: any;
-
     async function subscribe() {
       try {
+        console.log("connecting to supabase")
         const token = await getToken({ template: "supabase" });
-        const supabase = await supabaseClient(token);
+        const supabase = supabaseClient(token);
         supabaseRef.current = supabase;
-
-        channel =  supabase.channel("messages").on("postgres_changes",{
-          event:"INSERT",
-        },(payload:MessageType)=>{
-          console.log(payload)
-        })
-          .subscribe();
+        
+        supabase
+        .channel("custom-insert-channel")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "messages" },
+          (payload) => {
+            const newMessage = payload.new as MessageType;
+            dispatch({ type: "add_message", payload: newMessage });
+            console.log({newMessage});
+          }
+        )
+        .subscribe((status) => {
+          if (status !== "SUBSCRIBED") {
+            console.error("Subscription failed:", status);
+          }
+        });
       } catch (error) {
         console.error("Error setting up real-time subscription:", error);
       }
     }
-
+    
     if (userId) {
       subscribe();
     }
-
+    
     return () => {
-      if (supabaseRef.current && channel) {
-        supabaseRef.current.removeChannel(channel);
+      if (supabaseRef.current) {
+        supabaseRef.current.removeAllChannels();
+        console.log("dis connecting to supabase")
       }
     };
-  }, [getToken, dispatch, userId]);
+  }, [getToken, userId, dispatch]);
 
   const reactions = [
     { type: "heart", Icon: Heart },

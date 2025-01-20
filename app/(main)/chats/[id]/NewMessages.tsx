@@ -42,11 +42,10 @@ export default function NewMessages() {
             if (!token) throw new Error("Failed to retrieve token");
             const supabase = supabaseClient(token);
             
-            const res =await supabase.from("messages").insert({
+            await supabase.from("messages").insert({
                 ...newMsg,
                 reactions:JSON.stringify(newMsg.reactions),
             });
-            console.log({res})
             
             setNewMessage('')
             setSelectedFile(null)
