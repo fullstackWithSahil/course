@@ -1,49 +1,28 @@
 import { createClient } from "@/lib/server/supabase"
 import { StudentType, columns } from "./columns"
 import { DataTable } from "./data-table"
-
-async function getData(): Promise<StudentType[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: 1,
-      note: "pending",
-      email: "m@example.com",
-    },
-  ]
-}
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function DemoPage() {
-  const data = await getData()
+    const user = await currentUser();
+    if (!user) {
+      return <p>you are not allowed to see this page</p>
+    }
+    const supabase = await createClient();
+    const res = await supabase
+        .from("Students")
+        .select("*")
+        .eq("teacher",user.id);
+    
 
-  return (
-    <div className="mx-6 py-10">
-      <DataTable columns={columns} data={data} />
-    </div>
-  )
+    const data = !res.data?[]:res.data.map(student=>({
+        id:student.id.toString(),
+        email:student.email||"",
+        note: student.note ? student.note : "add a note",
+    }));
+    return (
+        <div className="mx-6 py-10">
+            <DataTable columns={columns} data={data} />
+        </div>
+    )
 }

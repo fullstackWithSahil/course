@@ -12,9 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox"
+import Link from "next/link";
+import Note from "./Note";
 
 export type StudentType = {
-  id: number;
+  id: string;
   email: string;
   note:string;
 }
@@ -41,6 +43,7 @@ export const columns: ColumnDef<StudentType>[] = [
   {
     accessorKey: "note",
     header: "note",
+    cell:(({row})=><Note note={row.original.note} id={Number(row.original.id)}/>)
   },
   {
     header:"actions",
@@ -64,8 +67,12 @@ export const columns: ColumnDef<StudentType>[] = [
               Copy email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/sendMail/${student.email}`}>Send an email</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/chats/${student.id}`}>Send a message</Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
