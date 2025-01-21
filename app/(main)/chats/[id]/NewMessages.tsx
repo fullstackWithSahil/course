@@ -26,7 +26,7 @@ export default function NewMessages() {
         if (newMessage.trim() || selectedFile) {
             const newMsg = {
                 message: newMessage,
-                to:"someone",
+                to: params.to?params.to as string:userId,
                 firstname: user?.firstName || '',
                 reactions: { heart: 0, thumbsUp: 0, thumbsDown: 0, smile: 0 },
                 profile:user?.imageUrl as string,
@@ -44,7 +44,7 @@ export default function NewMessages() {
             
             await supabase.from("messages").insert({
                 ...newMsg,
-                reactions:JSON.stringify(newMsg.reactions),
+                reactions: newMsg.reactions,
             });
             
             setNewMessage('')

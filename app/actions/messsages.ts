@@ -2,12 +2,16 @@
 
 import { createClient } from "@/lib/server/supabase";
 
-export async function getMessages(){
+export async function getMessages(courseId:number,user:string){
     try {
         const supabase = await createClient();
-        const {data} = await supabase
+        console.log({user,courseId})
+        const { data} = await supabase
             .from("messages")
-            .select("*");
+            .select("*")
+            .eq("course",courseId)
+            .or(`sender.eq.${user},to.eq.${user}`)
+        console.log({data})
         return data;
     } catch (error) {
         console.log("error getting messages",error);

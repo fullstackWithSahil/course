@@ -1,4 +1,5 @@
 import logo from "@/assets/sample.png";
+import NotAllowedToSee from "@/components/generic/NotAllowedToSee";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
@@ -9,7 +10,7 @@ export default async function page() {
     const supabase = await createClient();
     const user = await currentUser();
     if(!user){
-        return <p>you are not autherized to see this page</p>
+        return <NotAllowedToSee/>
     }
     const {data} = await supabase.from("courses").select("*").eq("teacher",user.id);
   return (
