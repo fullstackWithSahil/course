@@ -20,7 +20,9 @@ export default function Chats() {
   useEffect(()=>{
       //get the existing messages
       getMessages(id,userId as string).then((messages)=>{
-        dispatch({type:"add_many",payload:messages as any});
+        if(messages){
+          dispatch({type:"add_many",payload:messages as any});
+        }
       });
   },[userId])
 

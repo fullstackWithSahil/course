@@ -26,8 +26,8 @@ export default function ModuleCard({
   const [videoDescription, setVideoDescription] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
-  const [video,setVideo] = useState<any>();
-  const [Thumbnail,setThumbnail] = useState<any>();
+  const [video,setVideo] = useState<File|null>();
+  const [Thumbnail,setThumbnail] = useState<File|null>();
 
   const handleFileChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -76,11 +76,19 @@ export default function ModuleCard({
       setVideoPreview(null);
       setVideo(null);
       setThumbnail(null);
-      const courseDetails = await supabase.storage.from("courses").upload(key,video);
-      const thumbnailDetails = await supabase.storage.from("thumbnails").upload(key,Thumbnail);
-      if(courseDetails.error||thumbnailDetails.error){
-        console.log({courseDetails,thumbnailDetails});
+      if (video && Thumbnail) {
+        const courseDetails = await supabase.storage.from("courses").upload(key, video);
+        const thumbnailDetails = await supabase.storage.from("thumbnails").upload(key, Thumbnail);
+        if (courseDetails.error || thumbnailDetails.error) {
+          console.log({ courseDetails, thumbnailDetails });
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: "Video or Thumbnail file is missing.",
+        });
       }
+      
     }
   };
 

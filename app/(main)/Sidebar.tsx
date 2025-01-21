@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import sendDiscordMessage from "@/lib/discord";
 import { cn } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
 import { Dialog } from "@radix-ui/react-dialog";
 import { Home, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
 import Link from "next/link";

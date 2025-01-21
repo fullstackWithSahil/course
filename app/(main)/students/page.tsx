@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/server/supabase"
-import { StudentType, columns } from "./columns"
+import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { currentUser } from "@clerk/nextjs/server";
 

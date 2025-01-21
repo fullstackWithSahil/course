@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 
 type commentType = {
     comment: string | null;
+    commented_by: string | null;
     created_at: string;
     id: number;
     likes: number | null;
-    reply: boolean | null;
-    reply_to: string | null;
+    profile: string | null;
     video: number | null;
 }[];
 
@@ -20,14 +20,13 @@ export default function ReadComments({id}:{id:number}) {
     const {getToken} = useAuth();
     useEffect(()=>{
         async function getComments(){
-            const token = getToken();
+            const token = getToken({template:"supabase"});
             const supabase = supabaseClient(token);
-            const res= await (await supabase)
+            const res= await supabase
                 .from("comments")
                 .select("*")
                 .eq("video",id);
             setComments(res.data);
-            console.log({res});
         }
         if(clicked){
             getComments();

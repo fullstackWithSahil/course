@@ -5,7 +5,7 @@ import CourseCard from "./OldComponents";
 
 export default async function OldCourses() {
     const supabase = await createClient();
-    const { data, error } = await supabase.from('courses').select('*');
+    const { data } = await supabase.from('courses').select('*');
 
     return (
         <div className="container mx-auto p-4 space-y-6">

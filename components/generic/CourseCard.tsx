@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import React from 'react';
-import logo from "@/assets/sample.png";
 import { buttonVariants } from '../ui/button';
 import Link from 'next/link';
 
@@ -31,7 +30,7 @@ export default function CourseCard({
         <div className="flex flex-col md:flex-row items-center border border-gray-300 rounded-lg shadow-md p-4 gap-4 bg-white mx-3">
             <div className="w-full md:w-1/2 flex justify-center">
                 <Image
-                    src={logo}
+                    src={thumbnail}
                     alt="thumbnail"
                     className="w-full h-auto max-h-60 object-cover rounded-md"
                 />

@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -30,7 +31,7 @@ export default function Hero() {
           {/* Image/Visual Content */}
           <div className="relative">
             <div className="bg-white p-6 rounded-xl shadow-xl">
-              <img
+              <Image
                 src="/path/to/your-image.jpg"
                 alt="Preview of the platform"
                 className="rounded-lg object-cover"
