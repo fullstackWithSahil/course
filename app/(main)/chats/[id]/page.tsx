@@ -6,7 +6,7 @@ import Chats from './Chats'
 export default function ChatInterface() {
     return (
         <ChatProvider>
-            <Card className="w-full mx-auto">
+            <Card className="w-full m-0 rounded-none">
                 <CardHeader>
                     <CardTitle>Chat Room</CardTitle>
                 </CardHeader>
