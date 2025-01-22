@@ -22,6 +22,10 @@ import {
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@clerk/nextjs";
+import supabaseClient from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function CourseCard({ course, Price }:any){
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -31,11 +35,37 @@ export default function CourseCard({ course, Price }:any){
             currency: 'USD'
         }).format(price);
     };
+    const {getToken} = useAuth();
+    const {toast}= useToast();
+    const router = useRouter();
     const handleDelete = async () => {
         // Implement delete functionality
+        const token = await getToken({template:"supabase"});
+        const supabase = supabaseClient(token);
+    
+        const { error } = await supabase
+            .from('courses')
+            .delete()
+            .eq("id",course.id);
+        const {error:error2} = await supabase
+            .from("videos")
+            .delete()
+            .eq("course",course.id);
+        if(error||error2){
+            toast({
+                title:"Error deleting the course",
+                description:"There was an error deleting the course try again later"
+            })
+            return;
+        }
+        
         console.log('Deleting course:', course.id);
         setDeleteDialogOpen(false);
     };
+
+    function handleEdit(){
+        router.push(`/edit/${course.id}`);
+    }
 
     return (
         <>
@@ -67,7 +97,7 @@ export default function CourseCard({ course, Price }:any){
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleEdit}>
                                     <Pencil className="mr-2 h-4 w-4" />
                                     Edit
                                 </DropdownMenuItem>

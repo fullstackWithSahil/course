@@ -6,8 +6,9 @@ import { Module, Video, Action } from "./Context";
 import { Textarea } from "@/components/ui/textarea";
 import Assets from "./Assets";
 import { useToast } from "@/hooks/use-toast";
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useAuth } from "@clerk/nextjs";
+import axios from 'axios';
+
 
 export default function ModuleCard({
   module,
@@ -20,14 +21,58 @@ export default function ModuleCard({
 }) {
   const {userId} = useAuth();
   const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
-  const supabase = createClientComponentClient();
   const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
-  const [video,setVideo] = useState<File|null>();
-  const [Thumbnail,setThumbnail] = useState<File|null>();
+  const [video,setVideo] = useState<Blob|null>();
+  const [Thumbnail,setThumbnail] = useState<Blob|null>();
+
+  async function handleAddVideo(){
+    try {
+      if(!Thumbnail||!video){
+        toast({
+          title:"Video and thumbnail are required",
+          description:"It seems that you have not uploaded video or thumbnail"
+        })
+        return;
+      }
+      if (videoTitle.trim() && videoDescription.trim()) {
+        dispatch({
+          type: "ADD_VIDEO",
+          payload: {
+            moduleId: module.id,
+            video: {
+              id: Date.now().toString(),
+              title: videoTitle,
+              description: videoDescription,
+              url:key
+            },
+          },
+        });
+      }        
+      const formdata = new FormData();
+      formdata.append("thumbnail",Thumbnail);
+      formdata.append("video",video);
+      const {data}= await axios.post("http://localhost:8080/api/addVideo",formdata);
+      if(!data.message){
+        toast(data);
+        return;
+      }
+      setVideoTitle("");
+      setVideoDescription("");
+      setImagePreview(null);
+      setVideoPreview(null);
+      setVideo(null);
+      setThumbnail(null);
+    } catch (error) {
+      toast({
+        title:"Error uploding video",
+        description:"there was an error uploading video"
+      })
+    }
+  }
 
   const handleFileChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -46,49 +91,6 @@ export default function ModuleCard({
         }
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAddVideo = async() => {
-    if(!imagePreview&&!videoPreview){
-      toast({
-        title:"Add the video and thumbnail",
-        description:"you have not added the video or the thumbnail",
-      })
-      return;
-    }
-    if (videoTitle.trim() && videoDescription.trim()) {
-      dispatch({
-        type: "ADD_VIDEO",
-        payload: {
-          moduleId: module.id,
-          video: {
-            id: Date.now().toString(),
-            title: videoTitle,
-            description: videoDescription,
-            url:key
-          },
-        },
-      });
-      setVideoTitle("");
-      setVideoDescription("");
-      setImagePreview(null);
-      setVideoPreview(null);
-      setVideo(null);
-      setThumbnail(null);
-      if (video && Thumbnail) {
-        const courseDetails = await supabase.storage.from("courses").upload(key, video);
-        const thumbnailDetails = await supabase.storage.from("thumbnails").upload(key, Thumbnail);
-        if (courseDetails.error || thumbnailDetails.error) {
-          console.log({ courseDetails, thumbnailDetails });
-        }
-      } else {
-        toast({
-          title: "Error",
-          description: "Video or Thumbnail file is missing.",
-        });
-      }
-      
     }
   };
 

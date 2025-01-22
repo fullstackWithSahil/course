@@ -52,7 +52,7 @@ export default function NewCourse() {
         teacher: userId,
         name,
         description: desc,
-        thumbnail: key,
+        thumbnail: "syd.storage.bunnycdn.com/"+key,
         price,
       });
 
