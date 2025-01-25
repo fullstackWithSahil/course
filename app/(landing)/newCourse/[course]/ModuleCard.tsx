@@ -20,7 +20,7 @@ export default function ModuleCard({
   course:string;
 }) {
   const {userId} = useAuth();
-  const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
+  const key =`${process.env.NEXT_PUBLIC_CDN_URL||""}/${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
   const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
@@ -28,9 +28,11 @@ export default function ModuleCard({
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [video,setVideo] = useState<Blob|null>();
   const [Thumbnail,setThumbnail] = useState<Blob|null>();
+  const [uploding,setUploding] = useState(false);
 
   async function handleAddVideo(){
     try {
+      if(uploding) return;
       if(!Thumbnail||!video){
         toast({
           title:"Video and thumbnail are required",
@@ -47,14 +49,17 @@ export default function ModuleCard({
               id: Date.now().toString(),
               title: videoTitle,
               description: videoDescription,
-              url:key
+              url:key,
+              thumbnail:key+"/thumbnail.png"
             },
           },
         });
-      }        
+      }
       const formdata = new FormData();
       formdata.append("thumbnail",Thumbnail);
       formdata.append("video",video);
+      formdata.append("key",key);
+      setUploding(true);
       const {data}= await axios.post("http://localhost:8080/api/addVideo",formdata);
       if(!data.message){
         toast(data);
@@ -66,7 +71,9 @@ export default function ModuleCard({
       setVideoPreview(null);
       setVideo(null);
       setThumbnail(null);
+      setUploding(false);
     } catch (error) {
+      console.log(error)
       toast({
         title:"Error uploding video",
         description:"there was an error uploading video"
@@ -114,10 +121,11 @@ export default function ModuleCard({
             onChange={(e) => setVideoDescription(e.target.value)}
           />
           <Assets 
-            handleAddVideo={handleAddVideo} 
+            handleAddVideo={handleAddVideo}
             handleFileChange={handleFileChange} 
             imagePreview={imagePreview} 
             videoPreview={videoPreview}
+            uploading={uploding}
           />
         </div>
 

@@ -8,8 +8,10 @@ import ModuleCard from "./ModuleCard";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function CourseBuilder({course}:{course:string}){
+  const router = useRouter();
   const {toast} = useToast();
   const {userId,getToken} = useAuth();
   const [moduleName, setModuleName] = useState("");
@@ -57,7 +59,8 @@ export default function CourseBuilder({course}:{course:string}){
                 description: v.description,
                 course: courseId[0].id,
                 lesson:i+1,
-                url: "syd.storage.bunnycdn.com"+ v.url,
+                url: v.url,
+                thumbnail:v.thumbnail
               })
             )
           )
@@ -69,6 +72,7 @@ export default function CourseBuilder({course}:{course:string}){
         title: "Course uploaded successfully",
         description: "Your course was uploaded successfully",
       });
+      router.push("/home");
     } catch (error) {
       console.error("Error uploading course:", error);
       toast({

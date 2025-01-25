@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import supabaseClient from "@/lib/supabase";
+import axios from "axios";
 
 export default function NewCourse() {
   const { userId, getToken } = useAuth();
@@ -45,14 +46,14 @@ export default function NewCourse() {
     const key = `${userId}/${name}/thumbnail.png`;
     const token = await getToken({ template: "supabase" });
     if (!token) throw new Error("Failed to retrieve token");
-    const supabase = await supabaseClient(token);
+    const supabase = supabaseClient(token);
     try {
       // Insert course details
       const { error: insertError } = await supabase.from("courses").insert({
         teacher: userId,
         name,
         description: desc,
-        thumbnail: "syd.storage.bunnycdn.com/"+key,
+        thumbnail: "https://buisnesstools-course.b-cdn.net/"+key,
         price,
       });
 
@@ -64,16 +65,11 @@ export default function NewCourse() {
       }
 
       // Upload thumbnail
-      const { error: uploadError } = await supabase.storage
-        .from("thumbnails")
-        .upload(key, thumbnail);
-
-      // Handle upload error
-      if (uploadError) {
-        console.error(uploadError);
-        toast({ title: "Error uploading thumbnail" });
-        return;
-      }
+      const formData = new FormData();
+      formData.append("thumbnail",thumbnail);
+      formData.append("key",key);
+      const {data} = await axios.post("http://localhost:8080/api/addThumbnail",formData);
+      console.log({data})
 
       // Redirect on success
       router.push(`/newCourse/${name}`);

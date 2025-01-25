@@ -31,7 +31,7 @@ export default function ReadComments({id}:{id:number}) {
         if(clicked){
             getComments();
         }
-    },[clicked])
+    },[clicked,getToken,id])
   return (
     <Accordion type="single" collapsible className="w-full col-span-3">
         <AccordionItem value="item-1">

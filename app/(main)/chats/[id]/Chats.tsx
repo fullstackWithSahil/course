@@ -24,7 +24,7 @@ export default function Chats() {
           dispatch({type:"add_many",payload:messages as any});
         }
       });
-  },[userId])
+  },[userId,dispatch,id])
 
   useEffect(()=>{
     getToken({template:"supabase"}).then(async(token)=>{
@@ -45,7 +45,7 @@ export default function Chats() {
           channels.current.unsubscribe();
         }
       }
-  },[])
+  },[dispatch,getToken])
 
   return (
     <ScrollArea className="h-[400px] pr-4">

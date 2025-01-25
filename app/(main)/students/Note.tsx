@@ -20,7 +20,7 @@ export default function Note({ note, id }: { note: string; id: number }) {
   const { getToken } = useAuth();
   async function handleClick() {
     const token = await getToken({ template: "supabase" });
-    const supabase = await supabaseClient(token);
+    const supabase = supabaseClient(token);
 
     const res = await supabase
       .from("Students")

@@ -11,6 +11,7 @@ export default function Assets({
   imagePreview,
   videoPreview,
   handleAddVideo,
+  uploading
 }: {
   handleFileChange: (
     e: ChangeEvent<HTMLInputElement>,
@@ -19,6 +20,7 @@ export default function Assets({
   imagePreview: string | null;
   videoPreview: string | null;
   handleAddVideo: () => void;
+  uploading:boolean;
 }) {
   return (
     <div className="flex justify-around items-start gap-3">
@@ -27,7 +29,7 @@ export default function Assets({
         <Input
           id="picture"
           type="file"
-          accept="image/*"
+          accept="image/png"
           onChange={(e) => handleFileChange(e, "image")}
         />
         {imagePreview && (
@@ -64,9 +66,9 @@ export default function Assets({
       </div>
 
       <div className="space-y-2 flex items-center justify-center">
-        <Button onClick={handleAddVideo}>
+        <Button onClick={handleAddVideo} className={uploading?"bg-gray-800":""}>
             <PlusIcon className="mr-2 h-4 w-4" />
-            Add Video
+            {uploading?"uploding...":"Add Video"}
         </Button>
       </div>
     </div>
