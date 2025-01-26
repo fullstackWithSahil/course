@@ -43,17 +43,23 @@ export default function NewCourse() {
   };
 
   async function handleClick() {
-    const key = `${userId}/${name}/thumbnail.png`;
+    const key = `${userId}/${name}`;
     const token = await getToken({ template: "supabase" });
     if (!token) throw new Error("Failed to retrieve token");
     const supabase = supabaseClient(token);
     try {
+      // Upload thumbnail
+      const formData = new FormData();
+      formData.append("thumbnail",thumbnail);
+      formData.append("key",key);
+      const {data} = await axios.post("http://localhost:8080/api/addThumbnail",formData);
+
       // Insert course details
       const { error: insertError } = await supabase.from("courses").insert({
         teacher: userId,
         name,
         description: desc,
-        thumbnail: "https://buisnesstools-course.b-cdn.net/"+key,
+        thumbnail:data.url,
         price,
       });
 
@@ -63,13 +69,6 @@ export default function NewCourse() {
         toast({ title: "Error creating the course" });
         return;
       }
-
-      // Upload thumbnail
-      const formData = new FormData();
-      formData.append("thumbnail",thumbnail);
-      formData.append("key",key);
-      const {data} = await axios.post("http://localhost:8080/api/addThumbnail",formData);
-      console.log({data})
 
       // Redirect on success
       router.push(`/newCourse/${name}`);

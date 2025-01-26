@@ -19,8 +19,9 @@ export default function ModuleCard({
   dispatch: React.Dispatch<Action>;
   course:string;
 }) {
-  const {userId} = useAuth();
-  const key =`${process.env.NEXT_PUBLIC_CDN_URL||""}/${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
+  const {userId} = useAuth(); 
+  const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
+  const host ="https://buisnesstools-course.b-cdn.net/";
   const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
@@ -49,8 +50,8 @@ export default function ModuleCard({
               id: Date.now().toString(),
               title: videoTitle,
               description: videoDescription,
-              url:key,
-              thumbnail:key+"/thumbnail.png"
+              url:host+key,
+              thumbnail:host+key+"/thumbnail.png"
             },
           },
         });
