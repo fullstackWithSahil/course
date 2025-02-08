@@ -34,10 +34,11 @@ export default function CourseBuilder({course}:{course:string}){
       const supabase = supabaseClient(token);
   
       // Get course ID
-      const { data: courseId } = await supabase
+      const { data: courseId,error } = await supabase
         .from("courses")
-        .select("id")
+        .select("*")
         .eq("name", course);
+      console.log({courseId,error,course});
   
       if (!courseId || courseId.length === 0) {
         toast({

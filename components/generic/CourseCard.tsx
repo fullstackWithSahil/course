@@ -27,9 +27,9 @@ export default function CourseCard({
         fmdate.getFullYear().toString();
 
     return (
-        <div className="flex flex-col md:flex-row items-center border border-gray-300 rounded-lg shadow-md p-4 gap-4 bg-white mx-3">
+        <div className="flex flex-col md:flex-row items-center border border-gray-300 rounded-lg shadow-md p-4 gap-4 bg-white m-3">
             <div className="w-full md:w-1/2 flex justify-center">
-                <Image
+                <img
                     src={thumbnail}
                     alt="thumbnail"
                     className="w-full h-auto max-h-60 object-cover rounded-md"

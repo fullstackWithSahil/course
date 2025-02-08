@@ -20,8 +20,11 @@ export default async function OldCourses() {
                 {data?.map(course => (
                     <CourseCard 
                         key={course.id}
-                        course={course}
-                        formatPrice={course.price}
+                        id={course.id}
+                        description={course.description||""}
+                        thumbnail={course.thumbnail||""}
+                        name={course.name||""}
+                        price={course.price||0}
                     />
                 ))}
             </div>

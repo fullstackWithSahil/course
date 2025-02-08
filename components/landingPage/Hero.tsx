@@ -31,7 +31,7 @@ export default function Hero() {
           {/* Image/Visual Content */}
           <div className="relative">
             <div className="bg-white p-6 rounded-xl shadow-xl">
-              <Image
+              <img
                 src="/path/to/your-image.jpg"
                 alt="Preview of the platform"
                 className="rounded-lg object-cover"

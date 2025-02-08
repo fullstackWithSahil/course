@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@clerk/nextjs";
@@ -27,17 +27,47 @@ import supabaseClient from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-export default function CourseCard({ course, Price }:any){
+type propTypes ={
+    description: string ;
+    id: number;
+    name: string ;
+    price: number ;
+    thumbnail: string;
+}
+
+export default function CourseCard(course:propTypes){
+    const {getToken} = useAuth();
+    const {toast}= useToast();
+    const router = useRouter();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [students,setStudents] = useState(0);
+    const [videos,setVideos] = useState(0);
+    useEffect(()=>{
+        async function getData(){
+            try {
+                const token = await getToken({template:"supabase"});
+                const supabase = supabaseClient(token);
+                const {data:Nvideos} = await supabase.from("videos").select("*").eq("course",course.id);
+                setVideos(Nvideos?.length||0);
+                const {data:Nstudents} = await supabase.from("Students").select("*").eq("course",course.id);
+                setStudents(Nstudents?.length||0);
+            } catch (error) {
+                toast({
+                    title:"Error getting courses data",
+                    description: "Error getting courses data"
+                })
+            }
+        }
+        getData();
+    },[]);
+
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         }).format(price);
     };
-    const {getToken} = useAuth();
-    const {toast}= useToast();
-    const router = useRouter();
+    
     const handleDelete = async () => {
         // Implement delete functionality
         const token = await getToken({template:"supabase"});
@@ -114,16 +144,16 @@ export default function CourseCard({ course, Price }:any){
 
                     <div className="mt-4">
                         <p className="font-semibold text-lg text-primary">
-                            {formatPrice(Price)}
+                            {formatPrice(course.price)}
                         </p>
                     </div>
 
                     <div className="flex gap-2 mt-4">
                         <Badge variant="secondary">
-                            {course.students || 0} Students
+                            {students || 0} Students
                         </Badge>
                         <Badge variant="secondary">
-                            {course.lessons || 0} Lessons
+                            {videos || 0} Lessons
                         </Badge>
                     </div>
                 </CardContent>
