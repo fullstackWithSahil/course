@@ -49,7 +49,7 @@ export default function CourseCard(course:propTypes){
                 const supabase = supabaseClient(token);
                 const {data:Nvideos} = await supabase.from("videos").select("*").eq("course",course.id);
                 setVideos(Nvideos?.length||0);
-                const {data:Nstudents} = await supabase.from("Students").select("*").eq("course",course.id);
+                const {data:Nstudents} = await supabase.from("students").select("*").eq("course",course.id);
                 setStudents(Nstudents?.length||0);
             } catch (error) {
                 toast({

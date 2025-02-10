@@ -11,13 +11,14 @@ import supabaseClient from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function CourseBuilder({course}:{course:string}){
+  const {userId,getToken} = useAuth();
+  const name = "sahil";
   const router = useRouter();
   const {toast} = useToast();
-  const {userId,getToken} = useAuth();
   const [moduleName, setModuleName] = useState("");
   const {state,dispatch} = useCourseContext();
   const handleAddModule = () => {
-    if (moduleName.trim()) {
+    if (moduleName) {
       dispatch({
         type: "ADD_MODULE",
         payload: { id: Date.now().toString(), name: moduleName },
@@ -34,51 +35,47 @@ export default function CourseBuilder({course}:{course:string}){
       const supabase = supabaseClient(token);
   
       // Get course ID
-      const { data: courseId,error } = await supabase
-        .from("courses")
-        .select("*")
-        .eq("name", course);
-      console.log({courseId,error,course});
-  
-      if (!courseId || courseId.length === 0) {
-        toast({
-          title: "Course not found",
-          description: "The specified course does not exist",
-        });
-        return;
-      }
+      const courses = await supabase.from("courses").select("*").eq("name",course);
+      if(!courses.data) return null;
+      const courseId = courses.data[0].id;
   
       // Insert videos
-      await Promise.all(
-        state.map((mod) =>
-          Promise.all(
-            mod.videos.map((v,i) =>
-              supabase.from("videos").insert({
-                module: mod.name,
-                teacher: userId,
-                title: v.title,
-                description: v.description,
-                course: courseId[0].id,
-                lesson:i+1,
-                url: v.url,
-                thumbnail:v.thumbnail
-              })
-            )
+      console.log({state});
+      const videoUploadResults = await Promise.allSettled(
+        state.flatMap((mod) =>
+          mod.videos.map((v, i) =>
+            supabase.from("videos").insert({
+              module: mod.name,
+              teacher: userId,
+              title: v.title,
+              description: v.description,
+              course: courseId,
+              lesson: i + 1,
+              url: v.url,
+              thumbnail: v.thumbnail
+            })
           )
         )
       );
-  
+
+      // Log any failed uploads
+      videoUploadResults.forEach((result, index) => {
+        if (result.status === "rejected") {
+          console.error(`Error inserting video ${index}:`, result.reason);
+        }
+      });
+
       // Success toast
       toast({
         title: "Course uploaded successfully",
         description: "Your course was uploaded successfully",
       });
       router.push("/home");
-    } catch (error) {
-      console.error("Error uploading course:", error);
+    } catch (error:any) {
+      console.error("Error uploading course:", error.message || error);
       toast({
         title: "Error uploading course",
-        description: "There was an error uploading the course. Please try again later.",
+        description: error.message || "There was an error uploading the course. Please try again later.",
       });
     }
   }
