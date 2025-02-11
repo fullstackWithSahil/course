@@ -43,11 +43,29 @@ export default function NewCourse() {
   };
 
   async function handleClick() {
+    if (!userId) throw new Error("User ID is undefined");
     const key = `${userId}/${name}`;
     const token = await getToken({ template: "supabase" });
     if (!token) throw new Error("Failed to retrieve token");
     const supabase = supabaseClient(token);
     try {
+      // Check if course already exists
+      const { data: courseExists } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("teacher", userId)
+        .eq("name", name)
+        .single();
+
+      if (courseExists) {
+        toast({
+          title: "Course already exists",
+          description:
+            "You already have a course with this name. Please choose a different name.",
+        });
+        return; // Stop execution if course exists
+      }
+      
       // Upload thumbnail
       const formData = new FormData();
       formData.append("thumbnail",thumbnail);

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 
 export default function CourseBuilder({course}:{course:string}){
   const {userId,getToken} = useAuth();
-  const name = "sahil";
   const router = useRouter();
   const {toast} = useToast();
   const [moduleName, setModuleName] = useState("");

@@ -73,14 +73,15 @@ export default function CourseCard(course:propTypes){
         const token = await getToken({template:"supabase"});
         const supabase = supabaseClient(token);
     
-        const { error } = await supabase
-            .from('courses')
-            .delete()
-            .eq("id",course.id);
         const {error:error2} = await supabase
             .from("videos")
             .delete()
             .eq("course",course.id);
+        const {error} = await supabase
+            .from('courses')
+            .delete()
+            .eq("id",course.id);
+            
         if(error||error2){
             toast({
                 title:"Error deleting the course",
@@ -115,8 +116,8 @@ export default function CourseCard(course:propTypes){
                             <h3 className="font-semibold text-lg leading-none">
                                 {course.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                                {course.description}
+                            <p className="text-sm break-all whitespace-normal min-h-[20%] truncate">
+                                {course.description} 
                             </p>
                         </div>
                         <DropdownMenu>
