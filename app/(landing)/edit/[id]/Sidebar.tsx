@@ -17,7 +17,9 @@ export default function Sidebar() {
           <AccordionTrigger>Module-{i+1}:{iteam.name}</AccordionTrigger>
           <AccordionContent>
             <ol>
-                {iteam.videos.map((v,i)=><li key={v.id}>lesson{i+1}:{v.title}</li>)}
+                {iteam.videos.map((v,i)=><li key={v.id}>
+                  lesson{i+1}:{v.title}
+                </li>)}
             </ol>
           </AccordionContent>
         </AccordionItem>)}

@@ -51,7 +51,7 @@ export default function ModuleCard({
               title: videoTitle,
               description: videoDescription,
               url:host+key,
-              thumbnail:host+key+"/thumbnail.webp"
+              thumbnail:host+key+"thumbnail.webp"
             },
           },
         });

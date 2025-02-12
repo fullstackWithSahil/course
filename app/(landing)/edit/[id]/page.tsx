@@ -1,11 +1,16 @@
+import Mainsection from "./Mainsection";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Wrench } from "lucide-react";
 import Sidebar from "./Sidebar";
-import ContextWrapper from "./Context";
+import ContextWrapper, { State, Video } from "./Context";
 import { createClient } from "@/lib/server/supabase";
 
-export default async function Page({params}:{params:{id:string}}) {
-  const courseId = Number(params.id);
+export default async function Page({
+  params
+}:{
+  params: Promise<{ id: string }>
+}) {
+  const courseId = Number((await params).id);
   const supabase = await createClient();
   const {data} = await supabase
     .from("videos")
@@ -18,8 +23,9 @@ export default async function Page({params}:{params:{id:string}}) {
       </div>
     )
   }
+  const state = transformData(data);
   return (
-    <ContextWrapper>
+    <ContextWrapper initialState={state}>
       <main className="relative h-screen">
         <Sheet>
           <SheetTrigger asChild>
@@ -38,8 +44,56 @@ export default async function Page({params}:{params:{id:string}}) {
           <Sidebar />
         </section>
         <section className="md:w-[calc(100vw-300px)] w-full mt-5 absolute top-0 bottom-0 right-0 overflow-y-scroll">
+          <Mainsection/>
         </section>
       </main>
     </ContextWrapper>
   );
+}
+
+type SupabaseVideo = {
+  course: number | null;
+  created_at: string;
+  description: string | null;
+  id: number;
+  lesson: number | null;
+  module: string | null;
+  teacher: string | null;
+  thumbnail: string | null;
+  title: string | null;
+  url: string | null;
+}
+
+function transformData(data: SupabaseVideo[]): State {
+  // Group videos by module
+  const moduleMap = new Map<string, Video[]>();
+  
+  data.forEach((video) => {
+    if (!video.module || !video.title || !video.description || !video.url) {
+      return; // Skip invalid videos
+    }
+
+    const transformedVideo: Video = {
+      id: video.id.toString(),
+      title: video.title,
+      description: video.description,
+      url: video.url,
+      thumbnail: video.thumbnail || '',
+      lesson: video.lesson||0
+    };
+
+    if (!moduleMap.has(video.module)) {
+      moduleMap.set(video.module, []);
+    }
+    moduleMap.get(video.module)?.push(transformedVideo);
+  });
+
+  // Convert map to final state array
+  const state: State = Array.from(moduleMap.entries()).map(([moduleName, videos]) => ({
+    id: moduleName.toLowerCase().replace(/\s+/g, '-'), // Create an ID from module name
+    name: moduleName,
+    videos: videos
+  }));
+
+  return state;
 }

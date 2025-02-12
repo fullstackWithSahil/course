@@ -7,6 +7,8 @@ export type Video = {
   title: string;
   description: string;
   url:string;
+  thumbnail:string;
+  lesson: number;
 };
 
 export type Module = {
@@ -26,7 +28,6 @@ export type Action =
       payload: { moduleId: string; video: Video };
     };
 
-export const initialState: State = [];
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -67,7 +68,7 @@ export function reducer(state: State, action: Action): State {
 
 const Context = createContext<{state:State,dispatch:Dispatch<Action>}|null>(null);
 
-export default function ContextWrapper({children}:{children:ReactNode}){
+export default function ContextWrapper({children,initialState}:{children:ReactNode,initialState:State}) {
     const [state, dispatch] = useReducer(reducer, initialState);
     return (
         <Context.Provider value={{state,dispatch}}>

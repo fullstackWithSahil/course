@@ -1,6 +1,5 @@
 "use client"
 import Image from "next/image";
-import sample from "@/assets/sample.png";
 import { Pencil, Trash2, MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
@@ -103,7 +102,7 @@ export default function CourseCard(course:propTypes){
             <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg">
                 <div className="relative aspect-video">
                     <Image
-                        src={sample}
+                        src={course.thumbnail}
                         alt={course.name}
                         fill
                         className="object-cover"
@@ -116,7 +115,7 @@ export default function CourseCard(course:propTypes){
                             <h3 className="font-semibold text-lg leading-none">
                                 {course.name}
                             </h3>
-                            <p className="text-sm break-all whitespace-normal min-h-[20%] truncate">
+                            <p className="text-sm break-words whitespace-normal min-h-[20%] truncate">
                                 {course.description} 
                             </p>
                         </div>
