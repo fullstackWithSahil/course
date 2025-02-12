@@ -26,7 +26,10 @@ export type Action =
   | {
       type: "UPDATE_VIDEO_DETAILS";
       payload: { moduleId: string; video: Video };
-    };
+    }
+  |{ type: "CHANGE_VIDEO_TITLE"; payload: { id: string; title: string} }
+  |{ type: "CHANGE_VIDEO_DESCRIPTION"; payload: { id: string; description: string} }
+  |{ type: "CHANGE_VIDEO_LESSON"; payload: { id: string; lesson: number} };
 
 
 export function reducer(state: State, action: Action): State {
@@ -61,6 +64,33 @@ export function reducer(state: State, action: Action): State {
             }
           : module
       );
+      case "CHANGE_VIDEO_TITLE":
+        return state.map((module) => ({
+          ...module,
+          videos: module.videos.map((video) =>
+            video.id === action.payload.id
+              ? { ...video, title: action.payload.title }
+              : video
+          ),
+        }));
+      case "CHANGE_VIDEO_DESCRIPTION":
+        return state.map((module) => ({
+          ...module,
+          videos: module.videos.map((video) =>
+            video.id === action.payload.id
+              ? { ...video, description: action.payload.description }
+              : video
+          ),
+        }));
+      case "CHANGE_VIDEO_LESSON":
+        return state.map((module) => ({
+          ...module,
+          videos: module.videos.map((video) =>
+            video.id === action.payload.id
+              ? { ...video, lesson: action.payload.lesson}
+              : video
+          ),
+        }));
     default:
       return state;
   }
