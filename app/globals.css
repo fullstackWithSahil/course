@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.vjs-live-controls,
+.vjs-time-control,
+.vjs-current-time,
+.vjs-remaining-time,
+.vjs-progress-control {
+  display: none !important;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
