@@ -8,9 +8,9 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import ImageUploader from './Imageuploder'
+import MediaUploader from './MediaUploder'
 import Confirmation from '@/components/generic/Confirmation';
-import Video from './Video'
+import Video from './Video';
 
 export default function VideoCard({ lesson, url, thumbnail, title, description, id }: vid) {
     const [imageOpen, setImageOpen] = useState(false);
@@ -63,7 +63,8 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                                                 <Button>Change</Button>
                                             </DialogTrigger>
                                             <DialogContent className='p-0 aspect-video'>
-                                                <ImageUploader 
+                                                <MediaUploader
+                                                    type='image' 
                                                     onUpload={handleImageUpload} 
                                                     onCancel={() => setImageOpen(false)}
                                                 />
@@ -72,7 +73,7 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                                     </div>
                                 </>
                             ) : (
-                                <ImageUploader onCancel={() => {}} onUpload={() => {}}/>
+                                <MediaUploader type='image' onCancel={() => {}} onUpload={() => {}}/>
                             )}
                         </div>
                     </div>
@@ -99,7 +100,8 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                                                     <Button>Change</Button>
                                                 </DialogTrigger>
                                                 <DialogContent className='p-0 aspect-video'>
-                                                    <ImageUploader 
+                                                    <MediaUploader
+                                                        type='video' 
                                                         onUpload={handleImageUpload} 
                                                         onCancel={() => setImageOpen(false)}
                                                     />
@@ -109,7 +111,7 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                                     )}
                                 </>
                             ) : (
-                                <ImageUploader onCancel={() => {}} onUpload={() => {}}/>
+                                <MediaUploader type='video' onCancel={() => {}} onUpload={() => {}}/>
                             )}
                         </div>
                     </div>
