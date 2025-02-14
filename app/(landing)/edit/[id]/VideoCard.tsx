@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { useCourseContext, Video as vid } from './Context'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
@@ -10,13 +10,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import ImageUploader from './Imageuploder'
 import Confirmation from '@/components/generic/Confirmation';
-import videojs from 'video.js'
-import "video.js/dist/video-js.css";
-
+import Video from './Video'
 
 export default function VideoCard({ lesson, url, thumbnail, title, description, id }: vid) {
     const [imageOpen, setImageOpen] = useState(false);
+    const [videoClicked, setVideoClicked] = useState(false);
     const { dispatch } = useCourseContext();
+    
     function handleImageUpload(image: string | null): void {
         console.log("Uploaded image:", image);
     }
@@ -32,26 +32,30 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className='flex items-center justify-around'>
-                    <div>
-                        <h1 className="text-center text-2xl font-semibold">Thumbnail</h1>
-                        <div className='relative group'>
+                <div className='flex items-center justify-around gap-4'>
+                    <div className='flex-1'>
+                        <h1 className="text-center text-2xl font-semibold mb-2">Thumbnail</h1>
+                        <div className='relative group aspect-video'>
                             {thumbnail ? (
                                 <>
                                     <img 
                                         src={thumbnail} 
-                                        alt='Thumbnail' 
-                                        width={16*22} 
-                                        height={9*22} 
-                                        className='z-0'
+                                        alt='Thumbnail'
+                                        className='w-full h-full object-cover'
                                     />
-                                    <div className='flex items-center justify-center absolute inset-0 bg-gray-800 opacity-0 group-hover:opacity-60 transition-all duration-300'>
+                                    <div className='flex items-center justify-center gap-2 absolute inset-0 bg-gray-800 opacity-0 group-hover:opacity-60 transition-all duration-300'>
                                         <Dialog onOpenChange={setImageOpen} open={imageOpen}>
                                             <DialogTrigger>
                                                 <Button>Preview</Button>
                                             </DialogTrigger>
                                             <DialogContent className='p-0 aspect-video'>
-                                                <Image src={thumbnail} alt='Thumbnail' width={16*70} height={9*70}/>
+                                                <Image 
+                                                    src={thumbnail} 
+                                                    alt='Thumbnail' 
+                                                    width={1280} 
+                                                    height={720}
+                                                    className='w-full h-full object-cover'
+                                                />
                                             </DialogContent>
                                         </Dialog>
                                         <Dialog>
@@ -72,20 +76,45 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
                             )}
                         </div>
                     </div>
-                    <div>
-                        <h1 className="text-center text-2xl font-semibold">Video</h1>
+                    <div className='flex-1'>
+                        <h1 className="text-center text-2xl font-semibold mb-2">Video</h1>
                         <div className='relative group'>
                             {url ? (
-                                <div>
-                                    <Video src={url} className='w-[352px] h-[198px]'/>
-                                </div>
+                                <>
+                                    <div onClick={() => setVideoClicked(true)} className='aspect-video'>
+                                        <Video src={url} />
+                                    </div>
+                                    {videoClicked && (
+                                        <div className='flex items-center justify-center gap-2 absolute top-0 left-0 right-0 bottom-[20%] bg-gray-800 opacity-0 group-hover:opacity-60 transition-all duration-300'>
+                                            <Dialog onOpenChange={setImageOpen} open={imageOpen}>
+                                                <DialogTrigger>
+                                                    <Button>Preview</Button>
+                                                </DialogTrigger>
+                                                <DialogContent className='p-0 max-w-4xl w-full aspect-video'>
+                                                    <Video src={url} />
+                                                </DialogContent>
+                                            </Dialog>
+                                            <Dialog>
+                                                <DialogTrigger>
+                                                    <Button>Change</Button>
+                                                </DialogTrigger>
+                                                <DialogContent className='p-0 aspect-video'>
+                                                    <ImageUploader 
+                                                        onUpload={handleImageUpload} 
+                                                        onCancel={() => setImageOpen(false)}
+                                                    />
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <ImageUploader onCancel={() => {}} onUpload={() => {}}/>
                             )}
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className='mt-4 space-y-2'>
                     <Label htmlFor='lesson' className='text-xl'>Lesson number</Label>
                     <Input 
                         id='lesson' 
@@ -109,46 +138,4 @@ export default function VideoCard({ lesson, url, thumbnail, title, description, 
             </CardContent>
         </Card>
     )
-}
-
-function Video({src,className}:{src:string,className?:string}) {
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const playerRef = useRef<any | null>(null);
-    useEffect(() => {
-        if (!videoRef.current) return;
-      
-        setTimeout(() => {
-          if (!videoRef.current) return; // Ensure the ref exists
-      
-          playerRef.current = videojs(videoRef.current, {
-            autoplay: false,
-            responsive: true,
-            controls: true,
-            liveui: false,
-            sources: [
-              {
-                src: src+"/1080/index.m3u8",
-                type: "application/x-mpegURL",
-              },
-            ],
-          });
-      
-          console.log("Video.js player initialized:", playerRef.current);
-      
-          playerRef.current.on("error", () => {
-            console.error("Video.js error:", playerRef.current.error());
-          });
-        }, 0); // Small delay to ensure the DOM is updated
-      
-        return () => {
-          if (playerRef.current) {
-            playerRef.current.dispose();
-          }
-        };
-      }, [src]);
-    return (
-      <div data-vjs-player className={className}>
-        <video width={16*22} height={9*22}ref={videoRef} className="video-js vjs-default-skin" />
-      </div>
-    );
 }
