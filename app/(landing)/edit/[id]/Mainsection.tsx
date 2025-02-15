@@ -48,8 +48,6 @@ export default function Mainsection() {
           <ModuleCard
             key={module.id}
             module={module}
-            // dispatch={dispatch}
-            // course={course}
           />
         ))}
       </div>
@@ -63,7 +61,7 @@ function ModuleCard({module}:{module:Module}) {
   function addLesson(){
       dispatch({type:"ADD_VIDEO",payload:{moduleId:module.id,video:{id:Date.now().toString(),lesson:module.videos.length+1,title:"",description:"",thumbnail:"",url:""}}})
   }
-return (
+  return (
     <Card>
         <CardHeader>
             <CardTitle className='text-center capitalize text-3xl flex items-center justify-center gap-2'>
