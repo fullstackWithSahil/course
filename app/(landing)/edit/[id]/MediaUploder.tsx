@@ -1,172 +1,211 @@
-import React, { useState, useCallback, ChangeEvent } from 'react';
-import { Upload, X, Play } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useCallback, ChangeEvent, useEffect, Dispatch, SetStateAction } from 'react'
+import { Upload, X, Play } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface MediaUploaderProps {
-    type: 'video' | 'image';
-    onUpload: (media: string | null) => void;
-    onCancel: () => void;
+    type: 'video' | 'image'
+    file: File | null
+    setFile: (file: File | null) => void
+    onCancel: () => void
+    onUpload: () => void
+    previewUrl: string | null
+    setPreviewUrl: Dispatch<SetStateAction<string>>
+    setModalClose: (isOpen: boolean) => void
 }
 
 const MediaUploader: React.FC<MediaUploaderProps> = ({
     type,
+    file,
+    setFile,
+    onCancel,
     onUpload,
-    onCancel
+    previewUrl,
+    setPreviewUrl,
 }) => {
-  const [media, setMedia] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState(false)
+    const [localPreview, setLocalPreview] = useState<string | null>(previewUrl)
 
-  const acceptedTypes = {
-    image: 'image/*',
-    video: 'video/mp4'
-  };
-
-  const handleDrag = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDragIn = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragOut = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith(type === 'image' ? 'image/' : 'video/mp4')) {
-      const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
-        if (event.target?.result) {
-          setMedia(event.target.result as string);
+    const handleUpload = () => {
+        if (localPreview) {
+            setPreviewUrl(localPreview)
         }
-      };
-      reader.readAsDataURL(file);
-    }
-  }, [type]);
+        onUpload();
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith(type === 'image' ? 'image/' : 'video/mp4')) {
-      const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
-        if (event.target?.result) {
-          setMedia(event.target.result as string);
+        // The parent component will handle modal closing through its own state
+    }
+
+    const acceptedTypes = {
+        image: 'image/*',
+        video: 'video/mp4'
+    }
+
+    const handleDrag = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }, [])
+
+    const handleDragIn = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(true)
+    }, [])
+
+    const handleDragOut = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(false)
+    }, [])
+
+    const processFile = (newFile: File) => {
+        if (newFile && (
+            (type === 'image' && newFile.type.startsWith('image/')) ||
+            (type === 'video' && newFile.type === 'video/mp4')
+        )) {
+            setFile(newFile)
+            const objectUrl = URL.createObjectURL(newFile)
+            setLocalPreview(objectUrl)
+
+            // Clean up the object URL when component unmounts
+            return () => {
+                URL.revokeObjectURL(objectUrl)
+            }
         }
-      };
-      reader.readAsDataURL(file);
     }
-  };
 
-  const handleUpload = () => {
-    onUpload(media);
-  };
+    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setIsDragging(false)
 
-  const handleCancel = () => {
-    setMedia(null);
-    onCancel();
-  };
+        const newFile = e.dataTransfer.files[0]
+        if (newFile) {
+            processFile(newFile)
+        }
+    }, [type, setFile])
 
-  const renderPreview = () => {
-    if (!media) return null;
-
-    if (type === 'image') {
-      return (
-        <img 
-          src={media} 
-          alt="Uploaded preview" 
-          className="w-full h-full object-cover"
-        />
-      );
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const newFile = e.target.files?.[0]
+        if (newFile) {
+            processFile(newFile)
+        }
     }
+
+    const handleCancel = () => {
+        if (localPreview) {
+            URL.revokeObjectURL(localPreview)
+        }
+        setFile(null)
+        setLocalPreview(null)
+        onCancel()
+    }
+
+    const renderPreview = () => {
+        if (!localPreview) return null
+
+        if (type === 'image') {
+            return (
+                <img 
+                    src={localPreview} 
+                    alt="Preview" 
+                    className="max-h-64 w-auto object-contain mx-auto"
+                />
+            )
+        }
+
+        return (
+            <video 
+                src={localPreview} 
+                controls
+                className="max-h-64 w-auto mx-auto"
+            >
+                Your browser does not support the video tag.
+            </video>
+        )
+    }
+
+    const renderUploadIcon = () => {
+        return type === 'image' ? (
+            <Upload className="w-12 h-12 text-gray-400 mb-2" />
+        ) : (
+            <Play className="w-12 h-12 text-gray-400 mb-2" />
+        )
+    }
+
+    const renderDropzoneText = () => (
+        <p className="text-sm text-gray-500 text-center">
+            Drag and drop {type === 'image' ? 'an image' : 'a video'} or click to upload
+            {type === 'video' && (
+                <span className="block text-xs text-gray-400 mt-1">
+                    (MP4 format only)
+                </span>
+            )}
+        </p>
+    )
 
     return (
-      <video 
-        src={media} 
-        controls
-        className="w-full h-full object-cover"
-      >
-        Your browser does not support the video tag.
-      </video>
-    );
-  };
-
-  return (
-    <div className="w-full h-full flex flex-col">
-      <div 
-        className="w-full flex-1 flex items-center justify-center"
-        onDragEnter={handleDragIn}
-        onDragLeave={handleDragOut}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-      >
-        {media ? (
-          <div className="w-full h-full relative group">
-            {renderPreview()}
-            <label 
-              className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+        <div className="w-full flex flex-col gap-4">
+            <div className="text-lg font-semibold">
+                Upload {type === 'image' ? 'Thumbnail' : 'Video'}
+            </div>
+            
+            <div 
+                className={`
+                    min-h-[200px] border-2 rounded-lg transition-colors duration-200
+                    ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}
+                `}
+                onDragEnter={handleDragIn}
+                onDragLeave={handleDragOut}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
             >
-              <input
-                type="file"
-                accept={acceptedTypes[type]}
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <span className="text-white text-sm">Change {type === 'image' ? 'Image' : 'Video'}</span>
-            </label>
-          </div>
-        ) : (
-          <label className={`w-full h-full flex flex-col items-center justify-center border-2 border-dashed rounded-lg cursor-pointer transition-colors ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}`}>
-            <input
-              type="file"
-              accept={acceptedTypes[type]}
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            {type === 'image' ? (
-              <Upload className="w-12 h-12 text-gray-400 mb-2" />
-            ) : (
-              <Play className="w-12 h-12 text-gray-400 mb-2" />
+                {file || localPreview ? (
+                    <div className="relative w-full h-full p-4">
+                        {renderPreview()}
+                        <label className="mt-4 block text-center text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                            <input
+                                type="file"
+                                accept={acceptedTypes[type]}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                            Change {type === 'image' ? 'Image' : 'Video'}
+                        </label>
+                    </div>
+                ) : (
+                    <label className="h-full min-h-[200px] flex flex-col items-center justify-center cursor-pointer p-4">
+                        <input
+                            type="file"
+                            accept={acceptedTypes[type]}
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
+                        {renderUploadIcon()}
+                        {renderDropzoneText()}
+                    </label>
+                )}
+            </div>
+            
+            {file && (
+                <div className="flex justify-end gap-2">
+                    <Button 
+                        variant="outline" 
+                        onClick={handleCancel}
+                        className="flex items-center gap-2"
+                    >
+                        <X className="w-4 h-4" />
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleUpload}
+                        className="flex items-center gap-2"
+                    >
+                        <Upload className="w-4 h-4" />
+                        Upload
+                    </Button>
+                </div>
             )}
-            <p className="text-sm text-gray-500">
-              Drag and drop {type === 'image' ? 'an image' : 'a video'} or click to upload
-              {type === 'video' && <span className="block text-xs text-gray-400">(MP4 only)</span>}
-            </p>
-          </label>
-        )}
-      </div>
-      
-      {media && (
-        <div className="flex justify-end gap-2 p-4 border-t">
-          <Button 
-            variant="outline" 
-            onClick={handleCancel}
-            className="flex items-center gap-2"
-          >
-            <X className="w-4 h-4" />
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleUpload}
-            className="flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            Upload
-          </Button>
         </div>
-      )}
-    </div>
-  );
-};
+    )
+}
 
 export default MediaUploader;

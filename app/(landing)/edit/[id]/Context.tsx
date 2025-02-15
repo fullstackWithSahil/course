@@ -29,7 +29,9 @@ export type Action =
     }
   |{ type: "CHANGE_VIDEO_TITLE"; payload: { id: string; title: string} }
   |{ type: "CHANGE_VIDEO_DESCRIPTION"; payload: { id: string; description: string} }
-  |{ type: "CHANGE_VIDEO_LESSON"; payload: { id: string; lesson: number} };
+  |{ type: "CHANGE_VIDEO_LESSON"; payload: { id: string; lesson: number} }
+  |{ type: "CHANGE_VIDEO_URL"; payload: { id: string; url: string} }
+  |{ type: "CHANGE_VIDEO_THUMBNAIL"; payload: { id: string; thumbnail: string} }
 
 
 export function reducer(state: State, action: Action): State {
