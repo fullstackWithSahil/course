@@ -8,10 +8,12 @@ import { useCourseContext,Module } from "./Context";
 import Confirmation from "@/components/generic/Confirmation";
 import VideoCard from "./VideoCard";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Mainsection() {
   const {state,dispatch} = useCourseContext();
   const [moduleName, setModuleName] = useState("");
+  const {toast} = useToast();
   
   function handleAddModule(){
     if (moduleName) {
@@ -23,11 +25,22 @@ export default function Mainsection() {
     }
   }
 
+  async function handleUplode(){
+    try {
+      console.log({state})
+    } catch (error) {
+      toast({
+        title:"There was an error editing the course",
+        description:"There was an error editing the course try again later",
+      })
+    }
+  }
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold mb-4">Course Editor</h1>
-        <Button variant={"secondary"}>Upload course</Button>
+        <Button variant={"secondary"} onClick={handleUplode}>Upload course</Button>
       </div>
 
       <div className="flex items-center gap-4 mb-6">
@@ -59,7 +72,20 @@ function ModuleCard({module}:{module:Module}) {
   const {dispatch} = useCourseContext();
   function deleteModule(){}
   function addLesson(){
-      dispatch({type:"ADD_VIDEO",payload:{moduleId:module.id,video:{id:Date.now().toString(),lesson:module.videos.length+1,title:"",description:"",thumbnail:"",url:""}}})
+      dispatch({
+        type: "ADD_VIDEO",
+        payload: {
+          moduleId: module.id,
+          video: {
+            id: Date.now().toString(),
+            title: "",
+            description: "",
+            url:"",
+            thumbnail:"",
+            lesson: module.videos.length + 1,
+          },
+        },
+      });
   }
   return (
     <Card>
@@ -80,7 +106,7 @@ function ModuleCard({module}:{module:Module}) {
                 onChange={e=>dispatch({type:"UPDATE_MODULE_NAME",payload:{id:module.id,name:e.target.value}})}
               />
             </div>
-            {module.videos.map(v =><VideoCard {...v}/>)}
+            {module.videos.map(v =><VideoCard module={module} key={v.id} {...v}/>)}
             <Button onClick={addLesson}>Add a new lesson</Button>
         </CardContent>
     </Card>

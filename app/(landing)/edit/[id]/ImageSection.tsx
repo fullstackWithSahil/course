@@ -1,12 +1,17 @@
 "use client"
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import MediaUploader from "./MediaUploder"
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 
-export default function ImageSection({thumbnail}:{thumbnail:string}) {
-    const [thumbnail_, setThumbnail] = useState<File | null>(null)
+export default function ImageSection({
+  thumbnail,thumbnail_,setThumbnail
+}:{
+  thumbnail:string,
+  thumbnail_:File|null,
+  setThumbnail:Dispatch<SetStateAction<File|null>>
+}) {
     const [thumbnailUrl, setThumbnailUrl] = useState<string>(thumbnail)
     const [isThumbnailDialogOpen, setIsThumbnailDialogOpen] = useState(false)
     const [isThumbUploadDialogOpen, setIsThumbUploadDialogOpen] = useState(false)

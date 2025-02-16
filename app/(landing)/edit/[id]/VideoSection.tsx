@@ -1,20 +1,23 @@
 "use client"
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import MediaUploader from "./MediaUploder"
 import Video from './Video'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
-export default function VideoSection({ url }: { url: string }) {
-    const [video, setVideo] = useState<File | null>(null)
+export default function VideoSection({ 
+  url,video,setVideo 
+}: { 
+  url: string, 
+  video: File | null,
+  setVideo:Dispatch<SetStateAction<File | null>>
+}) {
     const [videoUrl, setVideoUrl] = useState<string>(url)
     const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false)
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
     async function handleVideoUpload() {
         if (video) {
-            // Here you would typically upload the file to your server
-            // For now, we'll just update the local state
             const objectUrl = URL.createObjectURL(video)
             setVideoUrl(objectUrl);
             setIsUploadDialogOpen(false);

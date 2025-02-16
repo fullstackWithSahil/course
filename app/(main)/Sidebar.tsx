@@ -87,10 +87,10 @@ phoneNumber:${phoneNumber}
       ))}
       <Dialog onOpenChange={setDisplayProblems} open={displayProblems}>
         <DialogTrigger asChild>
-          <Button variant={"destructive"} className="w-3/4">
+          <div className={cn(buttonVariants({variant:"destructive"}),"w-3/4")}>
             <Settings />
             Report a problem
-          </Button>
+          </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -121,17 +121,17 @@ phoneNumber:${phoneNumber}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={reportAProblem}>Submit</Button>
+            <div className={buttonVariants()} onClick={reportAProblem}>Submit</div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog onOpenChange={setDisplayPhone} open={displayPhone}>
         <DialogTrigger asChild>
-          <Button variant={"destructive"} className="w-3/4">
+          <div className={cn(buttonVariants({variant:"destructive"}),"w-3/4")}>
             <Phone />
             Request a call
-          </Button>
+          </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -165,7 +165,7 @@ phoneNumber:${phoneNumber}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={requestACall}>Submit</Button>
+            <div className={buttonVariants()}>Submit</div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

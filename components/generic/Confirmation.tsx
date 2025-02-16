@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 
 export default function Confirmation({
   onConfirmation,
@@ -21,10 +21,10 @@ export default function Confirmation({
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button variant="destructive">
+        <div className={buttonVariants({variant:"destructive"})}>
           <Trash />
           Delete
-        </Button>
+        </div>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
