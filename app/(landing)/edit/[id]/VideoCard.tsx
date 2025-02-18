@@ -32,25 +32,35 @@ export default function VideoCard({
             if(uploading) return;
             setUploding(true);
 
-            //initilizing supabase client and getting key for video and thumbnail url
+            // //initilizing supabase client and getting key for video and thumbnail url
             const token = await getToken({ template: "supabase" });
             const supabase = supabaseClient(token);
-            const {data:course} = await supabase.from("videos").select("*").eq("id",Number(params.id));
-            const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
+            const {data:course} = await supabase.from("courses").select("*").eq("id",Number(params.id));
+            if(!course||!course[0]) return;
+            const key =`${userId}/${course[0].name}/${module.name}/lesson-${module.videos.length+1}`;
             const host ="https://buisnesstools-course.b-cdn.net/";
             
-            //video and thumbnail transcoding if the File exist
-            if(thumbnail){
-                const {data} = await axios.post("/api/video/transcode",{key:host+key+"thumbnail.webp"});
-                if(data=="error"){
+            // //video and thumbnail transcoding if the File exist
+            if(thumbnail_){
+                const formData = new FormData();
+                formData.append('file', thumbnail_);
+                formData.append('key',`${key}/thumbnail.webp`);
+                const {data,error} = await supabase.functions.invoke("imageResizing",{body:formData});
+                console.log({data})
+                if(error){
                     toast({
                         title:"Something went wrong",
                         description:"Sorry, something went wrong while uploading video. Please try again later.",
                     })
                 }
             }
+
             if(video){
-                const {data} = await axios.post("/api/video/transcode",{key:host+key})
+                const formData = new FormData();
+                formData.append("video",video as Blob);
+                formData.append("key",key);
+                formData.append("update","true");
+                const {data} = await axios.post("http://localhost:8080/api/video/transcode",formData)
                 if(data=="error"){
                     toast({
                         title:"Something went wrong",
@@ -70,7 +80,7 @@ export default function VideoCard({
                     teacher: userId,
                     course: Number(params.id),
                     url:host+key,
-                    thumbnail:host+key+"thumbnail.webp"
+                    thumbnail:host+key+"/thumbnail.webp"
                 }).select();
                 console.log({data,error});
             } else {
@@ -95,8 +105,28 @@ export default function VideoCard({
         }
     }
 
-    function deleteVideo() {
+    async function deleteVideo() {
+        try {
+            const token = await getToken({template:"supabase"});
+            const supabase = supabaseClient(token);
+            const { error } = await supabase
+                .from('videos')
+                .delete()
+                .eq('id',id);
+
+            if (error) {
+                toast({
+                    title: "there was an error deleting the video",
+                    description: "there was an error deleting the video information please try again later",  
+                })
+            }
         
+        } catch (error) {
+            toast({
+                title: "there was an error deleting the video",
+                description: "there was an error deleting the video information please try again later",  
+            })
+        }
     }
 
     return (

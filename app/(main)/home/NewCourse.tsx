@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import supabaseClient from "@/lib/supabase";
-import axios from "axios";
 
 export default function NewCourse() {
   const { userId, getToken } = useAuth();
@@ -44,7 +43,7 @@ export default function NewCourse() {
 
   async function handleClick() {
     if (!userId) throw new Error("User ID is undefined");
-    const key = `${userId}/${name}`;
+    const key = `${userId}/${name}/thumbnail.webp`;
     const token = await getToken({ template: "supabase" });
     if (!token) throw new Error("Failed to retrieve token");
     const supabase = supabaseClient(token);
@@ -65,24 +64,25 @@ export default function NewCourse() {
         });
         return; // Stop execution if course exists
       }
-      
+
       // Upload thumbnail
       const formData = new FormData();
-      formData.append("thumbnail",thumbnail);
-      formData.append("key",key);
-      const {data} = await axios.post("http://localhost:8080/api/addThumbnail",formData);
+      formData.append('file', thumbnail);
+      formData.append('key',key);
+      const {data,error} = await supabase.functions.invoke("imageResizing",{body:formData});
+      console.log({data})
 
       // Insert course details
       const { error: insertError } = await supabase.from("courses").insert({
         teacher: userId,
         name,
         description: desc,
-        thumbnail:data.url,
+        thumbnail: "https://buisnesstools-course.b-cdn.net/"+key,
         price,
       });
 
       // Handle insert error
-      if (insertError) {
+      if (error||insertError) {
         console.error(insertError);
         toast({ title: "Error creating the course" });
         return;

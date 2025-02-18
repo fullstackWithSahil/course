@@ -8,6 +8,7 @@ import Assets from "./Assets";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import axios from 'axios';
+import supabaseClient from "@/lib/supabase";
 
 
 export default function ModuleCard({
@@ -19,7 +20,7 @@ export default function ModuleCard({
   dispatch: React.Dispatch<Action>;
   course:string;
 }) {
-  const {userId} = useAuth(); 
+  const {userId,getToken} = useAuth(); 
   const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
   const host ="https://buisnesstools-course.b-cdn.net/";
   const {toast} = useToast();
@@ -34,6 +35,7 @@ export default function ModuleCard({
   async function handleAddVideo(){
     try {
       if(uploding) return;
+      setUploding(true);
       if(!Thumbnail||!video){
         toast({
           title:"Video and thumbnail are required",
@@ -56,16 +58,27 @@ export default function ModuleCard({
           },
         });
       }
-      const formdata = new FormData();
-      formdata.append("thumbnail",Thumbnail);
-      formdata.append("video",video);
-      formdata.append("key",key);
-      setUploding(true);
-      const {data}= await axios.post("http://localhost:8080/api/addVideo",formdata);
+      const videodata = new FormData();
+      videodata.append("video",video);
+      videodata.append("key",key);
+      const {data}= await axios.post("http://localhost:8080/api/video/transcode",videodata);
       if(!data.message){
         toast(data);
         return;
       }
+      const thumbnailData = new FormData();
+      thumbnailData.append("key",key);
+      thumbnailData.append("file",Thumbnail);
+      const token = await getToken({template:"supabase"});
+      const supabase = supabaseClient(token);
+      const {error} = await supabase.functions.invoke("imageResizing",{body:thumbnailData});
+      if(error){
+        toast({
+          title:"Something went wrong",
+          description:"There was an error uploding the thumbnail"
+        })
+      }
+
       setVideoTitle("");
       setVideoDescription("");
       setImagePreview(null);
