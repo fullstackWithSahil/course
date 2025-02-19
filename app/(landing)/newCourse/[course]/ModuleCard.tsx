@@ -53,7 +53,7 @@ export default function ModuleCard({
               title: videoTitle,
               description: videoDescription,
               url:host+key,
-              thumbnail:host+key+"thumbnail.webp"
+              thumbnail:host+key+"/thumbnail.webp"
             },
           },
         });
@@ -67,7 +67,7 @@ export default function ModuleCard({
         return;
       }
       const thumbnailData = new FormData();
-      thumbnailData.append("key",key);
+      thumbnailData.append("key",`${key}/thumbnail.webp`);
       thumbnailData.append("file",Thumbnail);
       const token = await getToken({template:"supabase"});
       const supabase = supabaseClient(token);

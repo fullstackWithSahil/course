@@ -1,5 +1,5 @@
 "use client"
-import { Module, useCourseContext, Video as vid } from './Context'
+import { Module, useCourseContext, Video as vid } from '../Context'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
