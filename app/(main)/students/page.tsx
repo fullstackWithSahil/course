@@ -10,7 +10,7 @@ export default async function DemoPage() {
     }
     const supabase = await createClient();
     const res = await supabase
-        .from("Students")
+        .from("students")
         .select("*")
         .eq("teacher",user.id);
     

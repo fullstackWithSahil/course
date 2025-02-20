@@ -68,7 +68,7 @@ export const columns: ColumnDef<StudentType>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/sendMail/${student.email}`}>Send an email</Link>
+              <Link href={`/sendMail/${student.id}`}>Send an email</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link href={`/chats/${student.id}`}>Send a message</Link>

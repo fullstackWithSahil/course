@@ -18,12 +18,13 @@ export default function Note({ note, id }: { note: string; id: number }) {
   const [newNote, setNewNote] = useState(note == "add a note" ? "" : note);
   const [open, setOpen] = useState(false);
   const { getToken } = useAuth();
+  
   async function handleClick() {
     const token = await getToken({ template: "supabase" });
     const supabase = supabaseClient(token);
 
     const res = await supabase
-      .from("Students")
+      .from("students")
       .update({ note: newNote })
       .eq("id", id)
       .select();

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import sendDiscordMessage from "@/lib/discord";
 import { cn } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
 import { Dialog } from "@radix-ui/react-dialog";
 import { Home, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
 import Link from "next/link";
@@ -50,19 +51,19 @@ const tabs = [
 export default function Sidebar() {
     const [phoneNumber,setPhoneNumber] = useState("");
     const [problem,setProblem] = useState("");
-    const [email,setEmail] = useState("");
     const [name,setName] = useState("");
     const [displayProblems,setDisplayProblems] = useState(false);
     const [displayPhone,setDisplayPhone] = useState(false);
+    const user = useUser();
+
 
     async function reportAProblem(){
       const message = `someone has reported a problem:
-email:${email}
+email:${user.user?.primaryEmailAddress}
 problem:${problem}
 ------------------------------------------------------------------`;
       await sendDiscordMessage(message);
       setProblem("");
-      setEmail("");
       setDisplayProblems(false);
     }
 
@@ -97,17 +98,6 @@ phoneNumber:${phoneNumber}
             <DialogTitle>Report a problem</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                email
-              </Label>
-              <Input 
-                id="name" 
-                value={email} 
-                className="col-span-3" 
-                onChange={e=>setEmail(e.target.value)} 
-              />
-            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="username" className="col-span-4">
                 Problem you are facing
@@ -165,7 +155,7 @@ phoneNumber:${phoneNumber}
             </div>
           </div>
           <DialogFooter>
-            <div className={buttonVariants()}>Submit</div>
+            <div className={buttonVariants()} onClick={requestACall}>Submit</div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
