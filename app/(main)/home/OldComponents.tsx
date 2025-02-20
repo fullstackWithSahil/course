@@ -51,6 +51,7 @@ export default function CourseCard(course:propTypes){
                 const {data:Nstudents} = await supabase.from("students").select("*").eq("course",course.id);
                 setStudents(Nstudents?.length||0);
             } catch (error) {
+                console.log(error)
                 toast({
                     title:"Error getting courses data",
                     description: "Error getting courses data"

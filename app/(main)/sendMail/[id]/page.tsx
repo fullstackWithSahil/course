@@ -22,22 +22,22 @@ export default function Page() {
 
   async function handleClick(){
     try {
-      console.log("email sent",value);
-      // const token = await getToken({template:"supabase"});
-      //   const supabase = supabaseClient(token);
-      //   const {error} = await supabase.functions.invoke("sendEmail",{
-      //     body:{
-      //       from:user.user?.primaryEmailAddress,
-      //       to:to,
-      //       subject,
-      //       html:value
-      //     }
-      //   })
-      //   if(error){
-      //     throw error;
-      //   }
+      const token = await getToken({template:"supabase"});
+        const supabase = supabaseClient(token);
+        const {error} = await supabase.functions.invoke("sendEmail",{
+          body:{
+            from:user.user?.primaryEmailAddress,
+            to:to,
+            subject,
+            html:value
+          }
+        })
+        if(error){
+          throw error;
+        }
       router.push("/students");
     } catch (error) {
+      console.log(error)
       toast({
         title:"Something went wrong",
       })
@@ -55,13 +55,14 @@ export default function Page() {
         }
         setTo(data[0].email||"");
       } catch (error) {
+        console.log(error)
         toast({
           title:"Something went wrong",
         })
       }
     }
     getTo()
-  },[])
+  },[params.id,getToken,toast])
   return (
     <div className='w-full mx-3 my-5 md:my-0'>
       <div className='my-2'>

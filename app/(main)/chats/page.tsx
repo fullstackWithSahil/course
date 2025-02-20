@@ -15,7 +15,7 @@ export default async function page() {
     <main>
       {data?.map(async(course)=>{
         const {data} = await supabase
-          .from("Students")
+          .from("students")
           .select("id")
           .eq("course",course.id);
         const students = data?.length||0;

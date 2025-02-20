@@ -29,6 +29,7 @@ export default function Mainsection() {
     try {
       console.log({state})
     } catch (error) {
+      console.log(error);
       toast({
         title:"There was an error editing the course",
         description:"There was an error editing the course try again later",

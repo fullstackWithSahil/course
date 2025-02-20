@@ -2,8 +2,8 @@
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { buttonVariants } from '@/components/ui/button'
 import MediaUploader from "./MediaUploder"
-import Video from './Video'
 import { Dispatch, SetStateAction, useState } from 'react'
+import Video from './Video'
 
 export default function VideoSection({ 
   url,video,setVideo 

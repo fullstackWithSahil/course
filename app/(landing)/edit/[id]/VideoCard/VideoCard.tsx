@@ -122,6 +122,7 @@ export default function VideoCard({
             }
         
         } catch (error) {
+            console.log(error)
             toast({
                 title: "there was an error deleting the video",
                 description: "there was an error deleting the video information please try again later",  
