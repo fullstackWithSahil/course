@@ -3,7 +3,7 @@ import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { currentUser } from "@clerk/nextjs/server";
 
-export default async function DemoPage() {
+export default async function Page() {
     const user = await currentUser();
     if (!user) {
       return <p>you are not allowed to see this page</p>
