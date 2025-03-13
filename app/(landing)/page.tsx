@@ -19,7 +19,7 @@ const Website = () => {
           <div className="text-center md:text-left">
             <h2 className="text-2xl md:text-3xl">Simplified Course Creation</h2>
             <p className="text-base md:text-lg">
-              Build your dream course website without the technical hassle. We've got you covered with a user-friendly platform that streamlines the entire process.
+              Build your dream course website without the technical hassle. We&apos;ve got you covered with a user-friendly platform that streamlines the entire process.
             </p>
           </div>
           <div className="text-center md:text-left">

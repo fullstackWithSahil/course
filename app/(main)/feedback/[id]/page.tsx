@@ -2,7 +2,7 @@ import { createClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import React from "react";
-import logo from "@/assets/sample.png";
+import logo from '@/assets/logo.1141418a.png';
 import ReadComments from "./ReadComments";
 
 export default async function page({ params }: { params: { id: string } }) {
