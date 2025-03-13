@@ -1,9 +1,7 @@
-import logo from "@/assets/sample.png";
 import NotAllowedToSee from "@/components/generic/NotAllowedToSee";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
 import Link from "next/link";
 
 export default async function page() {
@@ -24,7 +22,7 @@ export default async function page() {
                 </div>: data.map((course) => (
                 <div key={course.id} className="mx-3">
                     <div className="border-2 rounded-xl p-4">
-                        <Image src={logo} alt="logo" />
+                        <img src={course.thumbnail||""} alt="logo" />
                         <h2 className="text-xl font-semibold">{course.name}</h2>
                         <p>{course.description}</p>
                         <Link href={`/feedback/${course.id}`} className={buttonVariants()}>

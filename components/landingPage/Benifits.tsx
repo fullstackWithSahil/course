@@ -12,6 +12,10 @@ export default function Benefits() {
         {/* Benefits Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <BenefitCard
+            title="High Costs & Revenue Sharing"
+            description="Other platforms often take a hefty cut of your earnings or charge hefty fees. Upto 40%"
+          />
+          <BenefitCard
             title="Save Time"
             description="Intuitive tools that streamline your workflow."
           />
@@ -30,12 +34,12 @@ export default function Benefits() {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center mt-12">
+        {/* <div className="text-center mt-12">
           <p className="text-lg font-medium text-gray-700">
             Trusted by <span className="text-blue-600 font-bold">10,000+</span>{" "}
             Course Creators Worldwide
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   );

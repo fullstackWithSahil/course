@@ -1,13 +1,17 @@
 "use client";
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
+import faqImage from '@/assets/FAQ.png';
+
 
 export default function Faq() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-3xl mx-auto px-4">
+    <section className="py-20 bg-white md:grid md:grid-cols-3">
+      <Image src={faqImage} alt="Faq"/>
+      <div className="max-w-3xl mx-auto px-4 col-span-2">
         <h2 className="text-3xl font-bold text-center mb-16">
           Got Questions? We&apos;ve Got Answers
         </h2>
@@ -38,7 +42,7 @@ const FaqItem = ({
   isActive: boolean;
   onClick: () => void;
 }) => (
-  <div className="border rounded-lg overflow-hidden">
+  <div className="border rounded-lg overflow-hidden w-[700px]">
     <button
       className="w-full text-left p-4 font-semibold flex justify-between items-center hover:bg-gray-50 transition"
       onClick={onClick}

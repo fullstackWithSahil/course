@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Globe,
-  Layout,
   Video,
   CreditCard,
   BarChart3,
@@ -23,11 +22,6 @@ export default function Features() {
             icon={<Globe size={24} />}
             title="Custom Domains"
             description="Get your own branded domain for a professional look."
-          />
-          <FeatureCard
-            icon={<Layout size={24} />}
-            title="Drag-and-Drop Builder"
-            description="Create beautiful landing pages without coding."
           />
           <FeatureCard
             icon={<Video size={24} />}
