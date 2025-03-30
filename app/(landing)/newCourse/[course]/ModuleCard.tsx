@@ -61,7 +61,7 @@ export default function ModuleCard({
       const videodata = new FormData();
       videodata.append("video",video);
       videodata.append("key",key);
-      const {data}= await axios.post("http://localhost:8080/api/video/transcode",videodata);
+      const {data}= await axios.post("http://13.203.204.51:8080/api/video/transcode",videodata);
       if(!data.message){
         toast(data);
         return;

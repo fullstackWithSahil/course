@@ -42,7 +42,7 @@ const FaqItem = ({
   isActive: boolean;
   onClick: () => void;
 }) => (
-  <div className="border rounded-lg overflow-hidden w-[700px]">
+  <div className="border rounded-lg overflow-hidden md:w-[700px]">
     <button
       className="w-full text-left p-4 font-semibold flex justify-between items-center hover:bg-gray-50 transition"
       onClick={onClick}

@@ -6,7 +6,9 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { ChevronDown, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
+import logo from "@/assets/logo.1141418a.png";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +17,7 @@ export default function Navbar() {
     <header className="bg-white sticky top-0 z-50 shadow-md">
       <nav className="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-3xl font-extrabold text-blue-600">EduStream</div>
+        <Image src={logo} alt="logo" width={120} height={40} />
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">

@@ -60,7 +60,7 @@ export default function VideoCard({
                 formData.append("video",video as Blob);
                 formData.append("key",key);
                 formData.append("update","true");
-                const {data} = await axios.post("http://localhost:8080/api/video/transcode",formData)
+                const {data} = await axios.post("http://13.203.204.51:8080/api/video/transcode",formData)
                 if(data=="error"){
                     toast({
                         title:"Something went wrong",
