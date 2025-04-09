@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Wrench } from "lucide-react";
 import Sidebar from "./Sidebar";
 import ContextWrapper, { State, Video } from "./Context";
-import { createClient } from "@/lib/server/supabase";
+import {createClient} from "@/lib/server/supabase"
 
 export default async function Page({
   params

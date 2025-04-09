@@ -17,7 +17,7 @@ export default function Navbar() {
     <header className="bg-white sticky top-0 z-50 shadow-md">
       <nav className="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
         {/* Logo */}
-        <Image src={logo} alt="logo" width={120} height={40} />
+        <Image src={logo} alt="logo" width={50} height={50} />
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">

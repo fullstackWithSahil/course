@@ -8,18 +8,18 @@ import Confirmation from '@/components/generic/Confirmation'
 import VideoSection from './VideoSection'
 import ImageSection from './ImageSection'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/use-toast'
 import { useState } from 'react'
-import { useAuth } from '@clerk/nextjs'
-import supabaseClient from '@/lib/supabase'
+import { useAuth, useSession } from '@clerk/nextjs'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
+import supabaseClient from '@/lib/supabase'
+import { toast } from 'sonner'
 
 export default function VideoCard({ 
     lesson, url, thumbnail, title, description, id ,module 
 }: vid&{module:Module}) {
-    const {toast} = useToast();
-    const {getToken,userId} = useAuth();
+    const {userId} = useAuth();
+    const {session} = useSession();
     const params = useParams();
     const [thumbnail_, setThumbnail] = useState<File | null>(null);
     const [video, setVideo] = useState<File | null>(null)
@@ -33,8 +33,7 @@ export default function VideoCard({
             setUploding(true);
 
             // //initilizing supabase client and getting key for video and thumbnail url
-            const token = await getToken({ template: "supabase" });
-            const supabase = supabaseClient(token);
+            const supabase = supabaseClient(session);
             const {data:course} = await supabase.from("courses").select("*").eq("id",Number(params.id));
             if(!course||!course[0]) return;
             const key =`${userId}/${course[0].name}/${module.name}/lesson-${module.videos.length+1}`;
@@ -48,10 +47,7 @@ export default function VideoCard({
                 const {data,error} = await supabase.functions.invoke("imageResizing",{body:formData});
                 console.log({data})
                 if(error){
-                    toast({
-                        title:"Something went wrong",
-                        description:"Sorry, something went wrong while uploading video. Please try again later.",
-                    })
+                    toast("Sorry, something went wrong while uploading video. Please try again later.")
                 }
             }
 
@@ -62,10 +58,7 @@ export default function VideoCard({
                 formData.append("update","true");
                 const {data} = await axios.post("http://13.203.204.51:8080/api/video/transcode",formData)
                 if(data=="error"){
-                    toast({
-                        title:"Something went wrong",
-                        description:"Sorry, something went wrong while uploading the thumbnail. Please try again later.",
-                    })
+                    toast("Sorry, something went wrong while uploading the thumbnail. Please try again later.")
                 }
             }
 
@@ -97,36 +90,26 @@ export default function VideoCard({
             setUploding(false)
         } catch (error) {
             console.error(error)
-            toast({
-                title: "there was an error",
-                description: "there was an error updating the video information please try again later",
-            })
+            toast("there was an error updating the video information please try again later")
             setUploding(false);
         }
     }
 
     async function deleteVideo() {
         try {
-            const token = await getToken({template:"supabase"});
-            const supabase = supabaseClient(token);
+            const supabase = supabaseClient(session);
             const { error } = await supabase
                 .from('videos')
                 .delete()
                 .eq('id',id);
 
             if (error) {
-                toast({
-                    title: "there was an error deleting the video",
-                    description: "there was an error deleting the video information please try again later",  
-                })
+                toast("there was an error deleting the video information please try again later")
             }
         
         } catch (error) {
             console.log(error)
-            toast({
-                title: "there was an error deleting the video",
-                description: "there was an error deleting the video information please try again later",  
-            })
+            toast("there was an error deleting the video information please try again later")
         }
     }
 

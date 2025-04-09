@@ -15,7 +15,7 @@ import sendDiscordMessage from "@/lib/discord";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { Dialog } from "@radix-ui/react-dialog";
-import { Home, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
+import { Home, Magnet, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -46,6 +46,11 @@ const tabs = [
     icon: <Quote />,
     href: "/faq",
   },
+  {
+    label:"Leads",
+    icon:<Magnet/>,
+    href:"/leads"
+  }
 ];
 
 export default function Sidebar() {

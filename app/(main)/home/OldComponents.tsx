@@ -23,8 +23,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type propTypes ={
     description: string ;
@@ -36,7 +36,6 @@ type propTypes ={
 
 export default function CourseCard(course:propTypes){
     const {getToken} = useAuth();
-    const {toast}= useToast();
     const router = useRouter();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [students,setStudents] = useState(0);
@@ -52,10 +51,7 @@ export default function CourseCard(course:propTypes){
                 setStudents(Nstudents?.length||0);
             } catch (error) {
                 console.log(error)
-                toast({
-                    title:"Error getting courses data",
-                    description: "Error getting courses data"
-                })
+                toast("Error getting courses data")
             }
         }
         getData();
@@ -83,10 +79,7 @@ export default function CourseCard(course:propTypes){
             .eq("id",course.id);
             
         if(error||error2){
-            toast({
-                title:"Error deleting the course",
-                description:"There was an error deleting the course try again later"
-            })
+            toast("There was an error deleting the course try again later")
             return;
         }
         

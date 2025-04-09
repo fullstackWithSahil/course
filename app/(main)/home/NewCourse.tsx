@@ -13,22 +13,23 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ChangeEvent, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useSession } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
+import { toast } from "sonner";
 import supabaseClient from "@/lib/supabase";
 
 export default function NewCourse() {
-  const { userId, getToken } = useAuth();
+  const { userId } = useAuth();
+  const {session} = useSession();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [thumbnail, setThumbnail] = useState<any>();
-  const { toast } = useToast();
   const router = useRouter();
+  
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -44,9 +45,7 @@ export default function NewCourse() {
   async function handleClick() {
     if (!userId) throw new Error("User ID is undefined");
     const key = `${userId}/${name}/thumbnail.webp`;
-    const token = await getToken({ template: "supabase" });
-    if (!token) throw new Error("Failed to retrieve token");
-    const supabase = supabaseClient(token);
+    const supabase = supabaseClient(session);
     try {
       // Check if course already exists
       const { data: courseExists } = await supabase
@@ -57,11 +56,7 @@ export default function NewCourse() {
         .single();
 
       if (courseExists) {
-        toast({
-          title: "Course already exists",
-          description:
-            "You already have a course with this name. Please choose a different name.",
-        });
+        toast("You already have a course with this name. Please choose a different name.");
         return; // Stop execution if course exists
       }
 
@@ -83,8 +78,8 @@ export default function NewCourse() {
 
       // Handle insert error
       if (error||insertError) {
-        console.error(insertError);
-        toast({ title: "Error creating the course" });
+        console.error({insertError});
+        toast("Error creating the course");
         return;
       }
 
@@ -92,10 +87,7 @@ export default function NewCourse() {
       router.push(`/newCourse/${name}`);
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Error creating a course",
-        description: "There was an error creating a course. Try again later.",
-      });
+      toast("There was an error creating a course. Try again later.");
     }
   }
 
