@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/server/supabase"
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CourseCard from "./OldComponents";
+import { supabaseClient } from "@/lib/server/supabase";
 
 export default async function OldCourses() {
-    const supabase = await createClient();
+    const supabase = supabaseClient();
     const { data } = await supabase.from('courses').select('*');
 
     return (

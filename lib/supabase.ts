@@ -1,13 +1,13 @@
-import { Database } from "@/database.types";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js"
 
-export default function supabaseClient(supabaseToken:any){
-  const supabase = createClient<Database>(
+export default function supabaseClient(session:any) {
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global:{headers:{Authorization:`Bearer ${supabaseToken}`},}
-    }
-  );
-  return supabase;
+      async accessToken() {
+        return session?.getToken() ?? null
+      },
+    },
+  )
 }

@@ -5,15 +5,14 @@ import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
 import { Module, useCourseContext } from "./Context";
 import ModuleCard from "./ModuleCard";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CourseBuilder({course}:{course:string}){
   const {userId,getToken} = useAuth();
   const router = useRouter();
-  const {toast} = useToast();
   const [moduleName, setModuleName] = useState("");
   const {state,dispatch} = useCourseContext();
   const handleAddModule = () => {
@@ -65,17 +64,11 @@ export default function CourseBuilder({course}:{course:string}){
       });
 
       // Success toast
-      toast({
-        title: "Course uploaded successfully",
-        description: "Your course was uploaded successfully",
-      });
+      toast("Your course was uploaded successfully");
       router.push("/home");
     } catch (error:any) {
       console.error("Error uploading course:", error.message || error);
-      toast({
-        title: "Error uploading course",
-        description: error.message || "There was an error uploading the course. Please try again later.",
-      });
+      toast("There was an error uploading the course. Please try again later.");
     }
   }
 

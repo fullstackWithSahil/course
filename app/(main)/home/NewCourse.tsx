@@ -43,7 +43,10 @@ export default function NewCourse() {
   };
 
   async function handleClick() {
-    if (!userId) throw new Error("User ID is undefined");
+    if (!userId){
+      toast("Please login to create a course");
+      return;
+    }
     const key = `${userId}/${name}/thumbnail.webp`;
     const supabase = supabaseClient(session);
     try {
@@ -64,7 +67,7 @@ export default function NewCourse() {
       const formData = new FormData();
       formData.append('file', thumbnail);
       formData.append('key',key);
-      const {data,error} = await supabase.functions.invoke("imageResizing",{body:formData});
+      const {data,error} = await supabase.functions.invoke("image-resize",{body:formData});
       console.log({data})
 
       // Insert course details
@@ -78,7 +81,8 @@ export default function NewCourse() {
 
       // Handle insert error
       if (error||insertError) {
-        console.error({insertError});
+        console.error(insertError);
+        console.error(error);
         toast("Error creating the course");
         return;
       }

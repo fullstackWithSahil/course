@@ -5,10 +5,10 @@ import { useState, ChangeEvent } from "react";
 import { Module, Video, Action } from "./Context";
 import { Textarea } from "@/components/ui/textarea";
 import Assets from "./Assets";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@clerk/nextjs";
 import axios from 'axios';
 import supabaseClient from "@/lib/supabase";
+import { toast } from "sonner";
 
 
 export default function ModuleCard({
@@ -23,7 +23,6 @@ export default function ModuleCard({
   const {userId,getToken} = useAuth(); 
   const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
   const host ="https://buisnesstools-course.b-cdn.net/";
-  const {toast} = useToast();
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDescription, setVideoDescription] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -37,10 +36,7 @@ export default function ModuleCard({
       if(uploding) return;
       setUploding(true);
       if(!Thumbnail||!video){
-        toast({
-          title:"Video and thumbnail are required",
-          description:"It seems that you have not uploaded video or thumbnail"
-        })
+        toast("It seems that you have not uploaded video or thumbnail")
         return;
       }
       if (videoTitle.trim() && videoDescription.trim()) {
@@ -73,10 +69,7 @@ export default function ModuleCard({
       const supabase = supabaseClient(token);
       const {error} = await supabase.functions.invoke("imageResizing",{body:thumbnailData});
       if(error){
-        toast({
-          title:"Something went wrong",
-          description:"There was an error uploding the thumbnail"
-        })
+        toast("There was an error uploding the thumbnail")
       }
 
       setVideoTitle("");
@@ -88,10 +81,7 @@ export default function ModuleCard({
       setUploding(false);
     } catch (error) {
       console.log(error)
-      toast({
-        title:"Error uploding video",
-        description:"there was an error uploading video"
-      })
+      toast("there was an error uploading video")
     }
   }
 

@@ -8,12 +8,11 @@ import { useCourseContext,Module } from "./Context";
 import Confirmation from "@/components/generic/Confirmation";
 import VideoCard from "./VideoCard/VideoCard";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function Mainsection() {
   const {state,dispatch} = useCourseContext();
   const [moduleName, setModuleName] = useState("");
-  const {toast} = useToast();
   
   function handleAddModule(){
     if (moduleName) {
@@ -30,10 +29,7 @@ export default function Mainsection() {
       console.log({state})
     } catch (error) {
       console.log(error);
-      toast({
-        title:"There was an error editing the course",
-        description:"There was an error editing the course try again later",
-      })
+      toast("There was an error editing the course try again later")
     }
   }
 
