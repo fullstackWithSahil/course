@@ -1,12 +1,12 @@
-import { createClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import React from "react";
 import logo from '@/assets/logo.1141418a.png';
 import ReadComments from "./ReadComments";
+import { supabaseClient } from "@/lib/server/supabase";
 
 export default async function page({ params }: { params: { id: string } }) {
-    const supabase = await createClient();
+    const supabase = supabaseClient();
     const user = await currentUser();
     if (!user) {
         return <p>you are not autherized to see this page</p>;

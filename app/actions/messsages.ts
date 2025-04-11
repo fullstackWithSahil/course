@@ -1,10 +1,11 @@
 "use server"
 
-import { createClient } from "@/lib/server/supabase";
+import { supabaseClient } from "@/lib/server/supabase";
+
 
 export async function getMessages(courseId:number,user:string){
     try {
-        const supabase = await createClient();
+        const supabase =  supabaseClient();
         console.log({user,courseId})
         const { data} = await supabase
             .from("messages")

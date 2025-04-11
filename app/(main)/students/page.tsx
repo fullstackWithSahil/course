@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/server/supabase"
+import { supabaseClient } from "@/lib/server/supabase";
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { currentUser } from "@clerk/nextjs/server";
@@ -8,7 +8,7 @@ export default async function Page() {
     if (!user) {
       return <p>you are not allowed to see this page</p>
     }
-    const supabase = await createClient();
+    const supabase = supabaseClient();
     const res = await supabase
         .from("students")
         .select("*")

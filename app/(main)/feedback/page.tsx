@@ -1,11 +1,11 @@
 import NotAllowedToSee from "@/components/generic/NotAllowedToSee";
 import { buttonVariants } from "@/components/ui/button";
-import { createClient } from "@/lib/server/supabase";
+import { supabaseClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 
 export default async function page() {
-    const supabase = await createClient();
+    const supabase = supabaseClient()
     const user = await currentUser();
     if(!user){
         return <NotAllowedToSee/>

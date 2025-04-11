@@ -1,6 +1,6 @@
 import CourseCard from "@/components/generic/CourseCard";
 import NotAllowedToSee from "@/components/generic/NotAllowedToSee";
-import { createClient } from "@/lib/server/supabase"
+import { supabaseClient } from "@/lib/server/supabase";
 import { currentUser } from "@clerk/nextjs/server";
 
 
@@ -9,7 +9,7 @@ export default async function page() {
   if(!user){
     return <NotAllowedToSee/>
   }
-  const supabase = await createClient();
+  const supabase = await supabaseClient();
   const {data} = await supabase.from("courses").select("*").eq("teacher",user.id||"");
   return (
     <main>

@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Wrench } from "lucide-react";
 import Sidebar from "./Sidebar";
 import ContextWrapper, { State, Video } from "./Context";
-import {createClient} from "@/lib/server/supabase"
+import { supabaseClient } from "@/lib/server/supabase";
 
 export default async function Page({
   params
@@ -11,7 +11,7 @@ export default async function Page({
   params: Promise<{ id: string }>
 }) {
   const courseId = Number((await params).id);
-  const supabase = await createClient();
+  const supabase = supabaseClient();
   const {data} = await supabase
     .from("videos")
     .select("*")
