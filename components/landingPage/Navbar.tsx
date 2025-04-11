@@ -1,6 +1,7 @@
 "use client";
 import {
   SignInButton,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -34,9 +35,12 @@ export default function Navbar() {
             Resources
           </a>
           <SignedOut>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            <span className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
               <SignInButton />
-            </button>
+            </span>
+            <span className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              <SignUpButton />
+            </span>
           </SignedOut>
           <SignedIn>
             <UserButton />
