@@ -4,8 +4,12 @@ import Maincontent from "./Maincontent";
 import Sidebar from "./Sidebar";
 import ContextWrapper from "./Context";
 
-export default function Page({params}:{params:{course:string}}) {
-  const {course} = params;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ course: string }>
+}) {
+  const {course} = await params;
   course.replaceAll("%"," ")
   return (
     <ContextWrapper>

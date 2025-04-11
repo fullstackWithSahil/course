@@ -5,8 +5,9 @@ import logo from '@/assets/logo.1141418a.png';
 import ReadComments from "./ReadComments";
 import { supabaseClient } from "@/lib/server/supabase";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function page({ params }: { params: Promise<{ id: string }> }) {
     const supabase = supabaseClient();
+    const { id } = await params;
     const user = await currentUser();
     if (!user) {
         return <p>you are not autherized to see this page</p>;
@@ -14,7 +15,7 @@ export default async function page({ params }: { params: { id: string } }) {
     const { data } = await supabase
         .from("videos")
         .select("*")
-        .eq("course",params.id);
+        .eq("course",id);
 
     return (
         <div>
