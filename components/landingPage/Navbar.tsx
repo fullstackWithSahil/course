@@ -10,15 +10,20 @@ import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import logo from "@/assets/logo.1141418a.png";
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <header className="bg-white sticky top-0 z-50 shadow-md">
       <nav className="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
         {/* Logo */}
-        <Image src={logo} alt="logo" width={50} height={50} />
+        <div className="flex items-center gap-2" onClick={() => router.push('/')}>
+          <Image src={logo} alt="logo" width={50} height={50} />
+          <h1 className="text-3xl font-extrabold">Courses</h1>
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8">
