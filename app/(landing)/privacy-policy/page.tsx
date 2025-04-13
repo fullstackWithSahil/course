@@ -5,10 +5,10 @@ interface PrivacyPolicyProps {
   contactEmail?: string;
 }
 
-const Page: React.FC<PrivacyPolicyProps> = ({
+export default function Page({
   effectiveDate = "April 15, 2025",
   contactEmail = "fullstackwithsahil@gmail.com"
-}) => {
+}:PrivacyPolicyProps){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="bg-gray-50 rounded-lg shadow-md p-6 md:p-8">
@@ -161,5 +161,3 @@ const Page: React.FC<PrivacyPolicyProps> = ({
     </div>
   );
 };
-
-export default Page;

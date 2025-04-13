@@ -1,10 +1,3 @@
-import React from 'react';
-
-type RefundPolicyProps = {
-  effectiveDate?: string;
-  contactEmail?: string;
-};
-
 export default function Page(){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">

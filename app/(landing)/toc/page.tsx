@@ -5,10 +5,10 @@ interface TermsOfServiceProps {
   jurisdiction?: string;
 }
 
-const Page: React.FC<TermsOfServiceProps> = ({
+export default function Page({
   contactEmail = "fullstackwithsahil@gmail.com",
   jurisdiction = "[Your Jurisdiction]"
-}) => {
+}:TermsOfServiceProps){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="bg-gray-50 rounded-lg shadow-md p-6 md:p-8">
@@ -159,5 +159,3 @@ const Page: React.FC<TermsOfServiceProps> = ({
     </div>
   );
 };
-
-export default Page;
