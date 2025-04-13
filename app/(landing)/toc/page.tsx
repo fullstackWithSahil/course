@@ -1,14 +1,4 @@
-import React from 'react';
-
-interface TermsOfServiceProps {
-  contactEmail?: string;
-  jurisdiction?: string;
-}
-
-export default function Page({
-  contactEmail = "fullstackwithsahil@gmail.com",
-  jurisdiction = "[Your Jurisdiction]"
-}:TermsOfServiceProps){
+export default function Page(){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="bg-gray-50 rounded-lg shadow-md p-6 md:p-8">
@@ -122,7 +112,7 @@ export default function Page({
             (a) We may suspend or terminate your access to our services if you violate these Terms.
           </p>
           <p className="text-gray-700">
-            (b) Users may request account deletion by contacting us at {contactEmail}.
+            (b) Users may request account deletion by contacting us at fullstackwithsahil@gmail.com.
           </p>
         </div>
         
@@ -131,10 +121,10 @@ export default function Page({
             9. Governing Law and Dispute Resolution
           </h2>
           <p className="text-gray-700 mb-2">
-            (a) These Terms are governed by the laws of {jurisdiction}.
+            (a) These Terms are governed by the laws of India.
           </p>
           <p className="text-gray-700">
-            (b) Disputes will be resolved through arbitration or legal proceedings in {jurisdiction}.
+            (b) Disputes will be resolved through arbitration or legal proceedings in India.
           </p>
         </div>
         
@@ -152,7 +142,7 @@ export default function Page({
             11. Contact Information
           </h2>
           <p className="text-gray-700">
-            For questions about these Terms, contact us at {contactEmail}.
+            For questions about these Terms, contact us at fullstackwithsahil@gmail.com.
           </p>
         </div>
       </div>

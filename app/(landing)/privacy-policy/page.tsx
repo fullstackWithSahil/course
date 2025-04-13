@@ -1,14 +1,4 @@
-import React from 'react';
-
-interface PrivacyPolicyProps {
-  effectiveDate?: string;
-  contactEmail?: string;
-}
-
-export default function Page({
-  effectiveDate = "April 15, 2025",
-  contactEmail = "fullstackwithsahil@gmail.com"
-}:PrivacyPolicyProps){
+export default function Page(){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="bg-gray-50 rounded-lg shadow-md p-6 md:p-8">
@@ -17,7 +7,7 @@ export default function Page({
         </h1>
         
         <div className="text-center italic text-gray-600 mb-8">
-          <strong>Effective Date:</strong> {effectiveDate}
+          <strong>Effective Date:</strong> 11 April 2025
         </div>
         
         <div className="mb-6">
@@ -118,7 +108,7 @@ export default function Page({
             <li>Withdrawing consent where applicable.</li>
           </ul>
           <p className="text-gray-700 mt-3">
-            To exercise these rights, contact us at {contactEmail}.
+            To exercise these rights, contact us at fullstackwithsahil@gmail.com.
           </p>
         </div>
         
@@ -154,7 +144,7 @@ export default function Page({
             11. Contact Information
           </h2>
           <p className="text-gray-700">
-            If you have any questions about this Privacy Policy, please contact us at {contactEmail}.
+            If you have any questions about this Privacy Policy, please contact us at fullstackwithsahil@gmail.com.
           </p>
         </div>
       </div>

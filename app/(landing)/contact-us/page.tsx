@@ -1,18 +1,6 @@
 import Form from './Form';
 
-interface ContactFormProps {
-  companyName?: string;
-  companyEmail?: string;
-  companyPhone?: string;
-  companyAddress?: string;
-}
-
-export default function Page({
-  companyName = "Business Tools Online",
-  companyEmail = "fullstackwithsahil@gmail.com",
-  companyPhone = "+91 9867624595",
-  companyAddress = "123 Business Avenue, Suite 101, San Francisco, CA 94107"
-}:ContactFormProps){
+export default function Page(){
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-8">
       <div className="bg-gray-50 rounded-lg shadow-md overflow-hidden">
@@ -32,26 +20,21 @@ export default function Page({
               <div className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="mb-6">
                   <h3 className="font-medium text-gray-900">Company</h3>
-                  <p className="text-gray-700">{companyName}</p>
+                  <p className="text-gray-700">Business Tools Online</p>
                 </div>
                 
                 <div className="mb-6">
                   <h3 className="font-medium text-gray-900">Email</h3>
-                  <a href={`mailto:${companyEmail}`} className="text-blue-600 hover:underline">
-                    {companyEmail}
+                  <a href={`mailto:fullstackwithsahil@gmail.com`} className="text-blue-600 hover:underline">
+                    fullstackwithsahil@gmail.com
                   </a>
                 </div>
                 
                 <div className="mb-6">
                   <h3 className="font-medium text-gray-900">Phone</h3>
-                  <a href={`tel:${companyPhone}`} className="text-blue-600 hover:underline">
-                    {companyPhone}
+                  <a href={`tel:+919867624595`} className="text-blue-600 hover:underline">
+                    +91 9867624595
                   </a>
-                </div>
-                
-                <div>
-                  <h3 className="font-medium text-gray-900">Address</h3>
-                  <p className="text-gray-700">{companyAddress}</p>
                 </div>
               </div>
               
