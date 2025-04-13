@@ -1,11 +1,46 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-4 grid-cols-1 gap-8">
           <div>
-            <h3 className="text-xl font-bold text-white mb-4">EduStream</h3>
-            <p>Create. Teach. Succeed.</p>
+            <h3 className="text-xl font-bold text-white mb-4">Policies</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/contact-us"
+                  className="hover:text-white focus:text-white focus:outline-none"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="hover:text-white focus:text-white focus:outline-none"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/toc"
+                  className="hover:text-white focus:text-white focus:outline-none"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/refund-policy"
+                  className="hover:text-white focus:text-white focus:outline-none"
+                >
+                  Refund Policy
+                </Link>
+              </li>
+            </ul>
           </div>
           <div>
             <h4 className="font-semibold text-white mb-4">Product</h4>
