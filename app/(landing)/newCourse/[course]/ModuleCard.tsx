@@ -20,7 +20,7 @@ export default function ModuleCard({
   dispatch: React.Dispatch<Action>;
   course:string;
 }) {
-  const {userId,getToken} = useAuth(); 
+  const {userId} = useAuth(); 
   const key =`${userId}/${course}/${module.name}/lesson-${module.videos.length+1}`;
   const host ="https://buisnesstools-course.b-cdn.net/";
   const [videoTitle, setVideoTitle] = useState("");
@@ -30,6 +30,16 @@ export default function ModuleCard({
   const [video,setVideo] = useState<Blob|null>();
   const [Thumbnail,setThumbnail] = useState<Blob|null>();
   const [uploding,setUploding] = useState(false);
+
+  function doneUploding(){
+    setVideoTitle("");
+    setVideoDescription("");
+    setImagePreview(null);
+    setVideoPreview(null);
+    setVideo(null);
+    setThumbnail(null);
+    setUploding(false);
+  }
 
   async function handleAddVideo(){
     try {
@@ -57,29 +67,34 @@ export default function ModuleCard({
       const videodata = new FormData();
       videodata.append("video",video);
       videodata.append("key",key);
-      const {data}= await axios.post("http://13.203.204.51:8080/api/video/transcode",videodata);
+      const {data}= await axios.post("http://localhost:8080/api/transcode",videodata);
       if(!data.message){
         toast(data);
         return;
       }
-      const thumbnailData = new FormData();
-      thumbnailData.append("key",`${key}/thumbnail.webp`);
-      thumbnailData.append("file",Thumbnail);
-      const token = await getToken({template:"supabase"});
-      const supabase = supabaseClient(token);
-      const {error} = await supabase.functions.invoke("imageResizing",{body:thumbnailData});
-      if(error){
-        toast("There was an error uploding the thumbnail")
-      }
+      const reader:any = new FileReader();
+      
+      // Using a promise to handle the FileReader async operation
+      const base64Image = await new Promise((resolve, reject) => {
+        reader.onload = () => {
+          // Get base64 string (remove data URL prefix)
+          const base64String = reader.result.split(',')[1];
+          resolve(base64String);
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(Thumbnail);
+      });
+  
+      // Call AWS Lambda function
+      const lambdaResponse = await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
+        key: key,
+        imageBase64: base64Image
+      })
+      console.log(lambdaResponse.data);
 
-      setVideoTitle("");
-      setVideoDescription("");
-      setImagePreview(null);
-      setVideoPreview(null);
-      setVideo(null);
-      setThumbnail(null);
-      setUploding(false);
+      doneUploding();
     } catch (error) {
+      doneUploding();
       console.log(error)
       toast("there was an error uploading video")
     }

@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { toast } from "sonner";
 import supabaseClient from "@/lib/supabase";
+import axios from "axios";
 
 export default function NewCourse() {
   const { userId } = useAuth();
@@ -43,50 +44,66 @@ export default function NewCourse() {
   };
 
   async function handleClick() {
-    if (!userId){
+    if (!userId) {
       toast("Please login to create a course");
       return;
     }
-    const key = `${userId}/${name}/thumbnail.webp`;
+    
+    const key = `${userId}/${name}/thumbnail`;
     const supabase = supabaseClient(session);
+    
     try {
       // Check if course already exists
-      const { data: courseExists } = await supabase
+      const { data: courseExists,error } = await supabase
         .from("courses")
         .select("*")
         .eq("teacher", userId)
         .eq("name", name)
         .single();
-
+      console.log({error,courseExists});
+  
       if (courseExists) {
         toast("You already have a course with this name. Please choose a different name.");
         return; // Stop execution if course exists
       }
-
-      // Upload thumbnail
-      const formData = new FormData();
-      formData.append('file', thumbnail);
-      formData.append('key',key);
-      const {data,error} = await supabase.functions.invoke("image-resize",{body:formData});
-      console.log({data})
-
+  
+      const reader:any = new FileReader();
+      
+      // Using a promise to handle the FileReader async operation
+      const base64Image = await new Promise((resolve, reject) => {
+        reader.onload = () => {
+          // Get base64 string (remove data URL prefix)
+          const base64String = reader.result.split(',')[1];
+          resolve(base64String);
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(thumbnail);
+      });
+  
+      // Call AWS Lambda function
+      const lambdaResponse = await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
+        key: key,
+        imageBase64: base64Image
+      })
+      console.log(lambdaResponse.data);
+      console.log('Image upload successful');
+  
       // Insert course details
       const { error: insertError } = await supabase.from("courses").insert({
         teacher: userId,
         name,
         description: desc,
-        thumbnail: "https://buisnesstools-course.b-cdn.net/"+key,
+        thumbnail: `https://buisnesstools-course.b-cdn.net/${key}.webp`,
         price,
       });
-
+  
       // Handle insert error
-      if (error||insertError) {
+      if (insertError) {
         console.error(insertError);
-        console.error(error);
         toast("Error creating the course");
         return;
       }
-
+  
       // Redirect on success
       router.push(`/newCourse/${name}`);
     } catch (error) {

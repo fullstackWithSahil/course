@@ -5,16 +5,17 @@ import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
 import { Module, useCourseContext } from "./Context";
 import ModuleCard from "./ModuleCard";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function CourseBuilder({course}:{course:string}){
-  const {userId,getToken} = useAuth();
+  const {userId} = useAuth();
   const router = useRouter();
   const [moduleName, setModuleName] = useState("");
   const {state,dispatch} = useCourseContext();
+  const {session} = useSession();
   const handleAddModule = () => {
     if (moduleName) {
       dispatch({
@@ -28,9 +29,7 @@ export default function CourseBuilder({course}:{course:string}){
   async function uploadCourse() {
     try {
       // Get token and initialize Supabase client
-      const token = await getToken({ template: "supabase" });
-      if (!token) throw new Error("Failed to retrieve token");
-      const supabase = supabaseClient(token);
+      const supabase = supabaseClient(session);
   
       // Get course ID
       const courses = await supabase.from("courses").select("*").eq("name",course);
