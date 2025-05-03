@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import Assets from "./Assets";
 import { useAuth } from "@clerk/nextjs";
 import axios from 'axios';
-import supabaseClient from "@/lib/supabase";
 import { toast } from "sonner";
 
 
@@ -87,10 +86,9 @@ export default function ModuleCard({
   
       // Call AWS Lambda function
       const lambdaResponse = await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
-        key: key,
+        key: `${key}/thumbnail`,
         imageBase64: base64Image
-      })
-      console.log(lambdaResponse.data);
+      });
 
       doneUploding();
     } catch (error) {

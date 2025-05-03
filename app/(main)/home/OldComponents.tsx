@@ -21,7 +21,7 @@ import {
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@clerk/nextjs";
+import { useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -35,16 +35,16 @@ type propTypes ={
 }
 
 export default function CourseCard(course:propTypes){
-    const {getToken} = useAuth();
+    const {session} = useSession();
     const router = useRouter();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [students,setStudents] = useState(0);
     const [videos,setVideos] = useState(0);
+
     useEffect(()=>{
         async function getData(){
             try {
-                const token = await getToken({template:"supabase"});
-                const supabase = supabaseClient(token);
+                const supabase = supabaseClient(session);
                 const {data:Nvideos} = await supabase.from("videos").select("*").eq("course",course.id);
                 setVideos(Nvideos?.length||0);
                 const {data:Nstudents} = await supabase.from("students").select("*").eq("course",course.id);
@@ -65,26 +65,40 @@ export default function CourseCard(course:propTypes){
     };
     
     const handleDelete = async () => {
-        // Implement delete functionality
-        const token = await getToken({template:"supabase"});
-        const supabase = supabaseClient(token);
-    
-        const {error:error2} = await supabase
-            .from("videos")
-            .delete()
-            .eq("course",course.id);
-        const {error} = await supabase
-            .from('courses')
-            .delete()
-            .eq("id",course.id);
+        try {
+            const supabase = supabaseClient(session);
+
+            const { error: videosError } = await supabase
+                .from('videos')
+                .delete()
+                .eq('course', course.id)
+                .select();
             
-        if(error||error2){
-            toast("There was an error deleting the course try again later")
-            return;
+            if (videosError) {
+                console.error("Error deleting videos:", videosError);
+                toast("There was an error deleting the course videos. Please try again later.");
+                return;
+            }
+            
+            // Then delete the course itself
+            const { error: courseError } = await supabase
+                .from('courses')
+                .delete()
+                .eq('id', course.id);
+                
+            if (courseError) {
+                console.error("Error deleting course:", courseError);
+                toast("There was an error deleting the course. Please try again later.");
+                return;
+            }
+            
+            console.log('Successfully deleted course:', course.id);
+            toast("Course deleted successfully");
+            setDeleteDialogOpen(false);
+        } catch (error) {
+            console.error("Unexpected error in handleDelete:", error);
+            toast("An unexpected error occurred");
         }
-        
-        console.log('Deleting course:', course.id);
-        setDeleteDialogOpen(false);
     };
 
     function handleEdit(){
