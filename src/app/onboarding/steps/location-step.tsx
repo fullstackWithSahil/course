@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MapPin } from "lucide-react"
+import { toast } from "sonner"
+import supabaseClient from "@/lib/supabase"
+import { useSession } from "@clerk/nextjs"
 
 interface LocationStepProps {
   formData: FormData
@@ -16,8 +19,16 @@ interface LocationStepProps {
 }
 
 export default function LocationStep({ formData, updateFormData, nextStep, prevStep }: LocationStepProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const {session} = useSession();
+  
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
+    const supabase = supabaseClient(session);
+    const {error} = await supabase.from("teachers").upsert({...formData,logo:""});
+    if(error){
+      console.log(error);
+      toast("There was an error adding your data. Please try again later...")
+    }
     nextStep()
   }
 
@@ -32,32 +43,32 @@ export default function LocationStep({ formData, updateFormData, nextStep, prevS
   ]
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-bold">Location & Students</h2>
-        <p className="text-gray-500">Where are your students primarily located?</p>
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="space-y-1 sm:space-y-2">
+        <h2 className="text-xl sm:text-2xl font-bold">Location & Students</h2>
+        <p className="text-sm text-gray-500">Where are your students primarily located?</p>
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-3">
+      <div className="space-y-3 sm:space-y-6">
+        <div className="space-y-1 sm:space-y-3">
           <Label>Student Location</Label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
             {locations.map((location) => (
               <Button
                 key={location.id}
                 type="button"
                 variant={formData.location === location.id ? "default" : "outline"}
                 onClick={() => updateFormData({ location: location.id })}
-                className="h-16 flex items-center gap-2"
+                className="h-12 sm:h-16 text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
               >
-                <MapPin className="h-4 w-4" />
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
                 {location.label}
               </Button>
             ))}
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <Label htmlFor="expectedStudents">Expected Students (Next Month)</Label>
           <Input
             id="expectedStudents"
@@ -71,7 +82,7 @@ export default function LocationStep({ formData, updateFormData, nextStep, prevS
         </div>
       </div>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-2 sm:gap-3 pt-2 sm:pt-4">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1">
           Back
         </Button>

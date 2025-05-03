@@ -32,11 +32,14 @@ export default function Navbar() {
 
 				{/* Desktop Menu */}
 				<div className="hidden md:flex items-center space-x-8">
-                    <Badge>Dashboard<Triangle className="rotate-90 fill-white"/></Badge>
+					<Badge>
+						Dashboard
+						<Triangle className="rotate-90 fill-white" />
+					</Badge>
 					{links.map((link) => (
 						<a
 							href={`#${link}`}
-              key={link}
+							key={link}
 							className="text-gray-700 hover:text-blue-600 transition capitalize"
 						>
 							{link}
@@ -72,7 +75,10 @@ export default function Navbar() {
 			{isMenuOpen && (
 				<div className="md:hidden bg-white border-t transition-all duration-200">
 					<div className="flex flex-col space-y-4 p-4">
-                        <Badge>Dashboard<Triangle className="rotate-90 fill-white"/></Badge>
+						<Badge>
+							Dashboard
+							<Triangle className="rotate-90 fill-white" />
+						</Badge>
 
 						{links.map((link) => (
 							<a

@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import PersonalInfoStep from "./steps/personal-info-step";
-import NotificationStep from "./steps/notification-steps";
 import BankDetailsStep from "./steps/bank-details-step";
-import CourseInfoStep from "./steps/course-info-steps";
-import LocationStep from "./steps/location-steps";
-import CompletionStep from "./steps/completion-steps";
 import ProgressIndicator from "./Progress-indecator";
+import NotificationStep from "./steps/notification-step";
+import CompletionStep from "./steps/completion-step";
+import LocationStep from "./steps/location-step";
+import CourseInfoStep from "./steps/course-info-step";
 
 export type FormData = {
   // Personal Info
@@ -27,31 +27,17 @@ export type FormData = {
   
   // Course Info
   brandName: string;
-  logo: File | null;
+  logo: string | null;
   curriculum: string;
   
   // Location Info
   location: string;
   expectedStudents: string;
+  completed:boolean;
+  teacher:string;
 };
 
-const initialFormData: FormData = {
-  name: "",
-  email: "",
-  mobile: "",
-  notificationMethod: "",
-  notificationContact: "",
-  accountName: "",
-  accountNumber: "",
-  routingNumber: "",
-  brandName: "",
-  logo: null,
-  curriculum: "",
-  location: "",
-  expectedStudents: "",
-};
-
-export default function OnboardingForm() {
+export default function OnboardingForm({initialFormData}:{initialFormData:FormData}) {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
 

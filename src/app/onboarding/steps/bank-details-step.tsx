@@ -6,6 +6,9 @@ import type { FormData } from "../Onboardingform"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
+import supabaseClient from "@/lib/supabase"
+import { useSession } from "@clerk/nextjs"
 
 interface BankDetailsStepProps {
   formData: FormData
@@ -15,23 +18,31 @@ interface BankDetailsStepProps {
 }
 
 export default function BankDetailsStep({ formData, updateFormData, nextStep, prevStep }: BankDetailsStepProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const {session} = useSession();
+  
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
+    const supabase = supabaseClient(session);
+    const {error} = await supabase.from("teachers").upsert({...formData,logo:""});
+    if(error){
+      console.log(error);
+      toast("There was an error adding your data. Please try again later...")
+    }
     nextStep()
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-bold">Bank Details</h2>
-        <p className="text-gray-500">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="space-y-1 sm:space-y-2">
+        <h2 className="text-xl sm:text-2xl font-bold">Bank Details</h2>
+        <p className="text-sm text-gray-500">
           Please provide your banking information for Stripe Connect integration. This information is securely processed
           by Stripe.
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-2">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-1 sm:space-y-2">
           <Label htmlFor="accountName">Account Holder Name</Label>
           <Input
             id="accountName"
@@ -42,7 +53,7 @@ export default function BankDetailsStep({ formData, updateFormData, nextStep, pr
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <Label htmlFor="accountNumber">Account Number</Label>
           <Input
             id="accountNumber"
@@ -53,7 +64,7 @@ export default function BankDetailsStep({ formData, updateFormData, nextStep, pr
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <Label htmlFor="routingNumber">Routing Number</Label>
           <Input
             id="routingNumber"
@@ -65,7 +76,7 @@ export default function BankDetailsStep({ formData, updateFormData, nextStep, pr
         </div>
       </div>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-2 sm:gap-3 pt-2 sm:pt-4">
         <Button type="button" variant="outline" onClick={prevStep} className="flex-1">
           Back
         </Button>
