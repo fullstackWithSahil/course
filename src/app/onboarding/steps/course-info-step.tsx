@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { UploadCloud } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import supabaseClient from "@/lib/supabase"
 import { useSession, useUser } from "@clerk/nextjs"
+import { v4 as uuidv4 } from 'uuid';
 
 interface CourseInfoStepProps {
   formData: FormData
@@ -27,23 +28,78 @@ export default function CourseInfoStep({ formData, updateFormData, nextStep, pre
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
     const supabase = supabaseClient(session);
-    const fileExtension = file?.type.split("/")[1];
-    const {error} = await supabase.from("teachers").upsert({
-      ...formData,
-      logo:`${user?.id}/logo.${fileExtension}`
-    });
-    let error2 = null;
-    if (file) {
-      const uploadResult = await supabase.storage
+    if(formData.logo){
+      const {error} = await supabase.from("teachers").update({
+        ...formData,
+        logo: formData.logo
+      }).eq("teacher",user?.id||"");
+
+      let error2 = null;
+      if (file) {
+        const uploadResult = await supabase.storage
+          .from("onboarding")
+          .upload(formData.logo, file);
+        error2 = uploadResult.error;
+      }
+      if(error||error2){
+        console.log({error,error2});
+        toast("There was an error adding your data. Please try again later...")
+      }
+      nextStep()
+    }
+
+  }
+
+  useEffect(() => {
+    if(formData.logo && user?.id) {
+      console.log({logo:formData.logo})
+      const supabase = supabaseClient(session);
+      
+      // First, get a temporary URL for the logo
+      const getLogoUrl = async () => {
+        try {
+          const { data, error } = await supabase.storage
+            .from("onboarding")
+            .createSignedUrl(`${formData.logo}`, 3600); // URL valid for 1 hour
+            
+          if (error) {
+            console.error("Error getting logo URL:", error);
+            return;
+          }
+          
+          if (data?.signedUrl) {
+            setLogoPreview(data.signedUrl);
+            
+            // Optional: Convert URL to File object
+            const response = await fetch(data.signedUrl);
+            const blob = await response.blob();
+            const fileFromBlob = new File(
+              [blob], 
+              formData.logo?.split('/').pop() || 'logo', 
+              { type: blob.type }
+            );
+            setFile(fileFromBlob);
+          }
+        } catch (err) {
+          console.error("Error fetching logo:", err);
+        }
+      };
+      
+      getLogoUrl();
+    }
+  }, []);
+
+  async function removeLogo(){
+    const supabase = supabaseClient(session);
+    if(formData.logo){
+      supabase.storage
         .from("onboarding")
-        .upload(`${user?.id}/logo.${fileExtension}`, file);
-      error2 = uploadResult.error;
+        .remove([formData.logo])
+        .then(()=>{
+          setLogoPreview(null);
+          updateFormData({ logo: null });
+        });
     }
-    if(error||error2){
-      console.log({error,error2});
-      toast("There was an error adding your data. Please try again later...")
-    }
-    nextStep()
   }
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +107,8 @@ export default function CourseInfoStep({ formData, updateFormData, nextStep, pre
       const file = e.target.files[0]
       setFile(file);
       const fileExtension = file.type.split("/")[1];
-      updateFormData({ logo: `${user?.id}/logo.${fileExtension}` });
+      const id = uuidv4();
+      updateFormData({ logo: `${user?.id}/logo${id}.${fileExtension}` });
 
       // Create preview URL
       const reader = new FileReader()
@@ -94,10 +151,7 @@ export default function CourseInfoStep({ formData, updateFormData, nextStep, pre
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => {
-                    setLogoPreview(null)
-                    updateFormData({ logo: null })
-                  }}
+                  onClick={removeLogo}
                   size="sm"
                   className="sm:text-base"
                 >

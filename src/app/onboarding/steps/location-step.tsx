@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { MapPin } from "lucide-react"
 import { toast } from "sonner"
 import supabaseClient from "@/lib/supabase"
-import { useSession } from "@clerk/nextjs"
+import { useSession, useUser } from "@clerk/nextjs"
 
 interface LocationStepProps {
   formData: FormData
@@ -20,11 +20,15 @@ interface LocationStepProps {
 
 export default function LocationStep({ formData, updateFormData, nextStep, prevStep }: LocationStepProps) {
   const {session} = useSession();
+  const {user} = useUser();
   
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
     const supabase = supabaseClient(session);
-    const {error} = await supabase.from("teachers").upsert({...formData,logo:""});
+    const {error} = await supabase
+      .from("teachers")
+      .update({...formData,logo:""})
+      .eq("teacher",user?.id||"");
     if(error){
       console.log(error);
       toast("There was an error adding your data. Please try again later...")

@@ -3,8 +3,9 @@ import type { FormData } from "../Onboardingform"
 
 import { Button } from "@/components/ui/button"
 import supabaseClient from "@/lib/supabase"
-import { useSession } from "@clerk/nextjs"
+import { useSession, useUser } from "@clerk/nextjs"
 import { CheckCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 interface CompletionStepProps {
@@ -13,15 +14,21 @@ interface CompletionStepProps {
 
 export default function CompletionStep({ formData }: CompletionStepProps) {
   const {session} = useSession();
+  const {user} = useUser();
+  const router = useRouter();
   
   const handleSubmitToServer = async(e: React.FormEvent) => {
     e.preventDefault()
     const supabase = supabaseClient(session);
-    const {error} = await supabase.from("teachers").upsert({...formData,logo:""});
+    const {error} = await supabase
+      .from("teachers")
+      .update({...formData,logo:""})
+      .eq("teacher",user?.id||"");
     if(error){
       console.log(error);
       toast("There was an error adding your data. Please try again later...")
     }
+    router.push("/home")
   }
 
   return (
