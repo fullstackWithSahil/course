@@ -32,7 +32,7 @@ export default function Navbar() {
 
 				{/* Desktop Menu */}
 				<div className="hidden md:flex items-center space-x-8">
-					<Badge>
+					<Badge className="cursor-pointer" onClick={()=>router.push("/home")}>
 						Dashboard
 						<Triangle className="rotate-90 fill-white" />
 					</Badge>
