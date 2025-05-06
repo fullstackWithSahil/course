@@ -87,12 +87,14 @@ export default function Newcourse() {
 
             //handling errors related to uploding the course
             if(error||insertError){
+                console.log({error,insertError})
                 toast("something went wrong. Try again later...")
             }
 
             //redirecting them to course uploder
             router.push(`/newCourse/${name}`);
         } catch (error) {
+            console.log(error)
             toast("something went wrong. Try again later...")
         }
     }
