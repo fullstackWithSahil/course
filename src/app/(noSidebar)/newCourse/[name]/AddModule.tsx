@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCourseContext } from "./Context";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AddModule() {
 	const [module, setModule] = useState("");
@@ -16,10 +17,18 @@ export default function AddModule() {
 		setModule("");
 	}
 
+	async function uplodeCourse(){
+		try {
+			console.log(state);
+		} catch (error) {
+			toast.error("there was an error uploding the course")
+		}
+	}
+
 	return (
 		<div className="m-3 grid grid-cols-3 gap-2">
 			<Input
-				className="col-span-2"
+				className="col-span-2 mx-4"
 				value={module}
 				onChange={(e) => setModule(e.target.value)}
 				onKeyDown={(e) => {
@@ -28,7 +37,10 @@ export default function AddModule() {
 					}
 				}}
 			/>
-			<Button onClick={addModule}>Add Module</Button>
+			<Button onClick={addModule} className="mx-4">Add Module</Button>
+			<Button onClick={uplodeCourse} className="col-span-3 mx-4">
+				Uplode course
+			</Button>
 		</div>
 	);
 }

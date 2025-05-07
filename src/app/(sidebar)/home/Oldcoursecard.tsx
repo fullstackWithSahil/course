@@ -111,7 +111,7 @@ export default function CourseCard(course:propTypes){
                     <img
                         src={course.thumbnail}
                         alt={course.name}
-                        className="object-cover"
+                        className="object-cover w-full"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </div>

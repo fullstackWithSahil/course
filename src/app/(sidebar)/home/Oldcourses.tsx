@@ -28,7 +28,7 @@ export default async function Oldcourses() {
 		);
 	}
 	return (
-		<div className="m-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+		<div className="m-3 grid gap-5 grid-cols-1 md:grid-cols-2">
 			{data?.map(course => (
                 <CourseCard 
                     key={course.id}
