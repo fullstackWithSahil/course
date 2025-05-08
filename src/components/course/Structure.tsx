@@ -13,6 +13,7 @@ export default function Structure({
 	context: () => { state: State };
 }) {
 	const { state } = context();
+	console.log(state)
 	return (
 		<div className="w-1/4 bg-gray-300 h-full">
 			<h1 className="text-xl text-center font-bold">Course structure</h1>
@@ -26,7 +27,7 @@ export default function Structure({
 							<ol>
 								{iteam.videos.map((v, i) => (
 									<li key={v.id}>
-										lesson{i + 1}:{v.title}
+										lesson{v.lesson}:{v.title}
 									</li>
 								))}
 							</ol>

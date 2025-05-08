@@ -3,9 +3,7 @@ import React, { ReactNode } from 'react'
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
     SheetHeader,
-    SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
 import Sidebar from './Sidebar'

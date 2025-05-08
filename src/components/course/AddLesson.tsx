@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import MediaUploader from "@/components/course/MediaUploder";
 import { Label } from "@/components/ui/label";
 import { v4 as uuidv4 } from 'uuid';
@@ -112,6 +112,60 @@ export default function AddLesson({
 		}
 	}
 
+	function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+		const { id, value } = e.target;
+		
+		// For update mode, dispatch appropriate action based on field
+		if (update) {
+		  type actionMapType= {
+			name: "CHANGE_VIDEO_TITLE",
+			description: "CHANGE_VIDEO_DESCRIPTION",
+			lesson: "CHANGE_VIDEO_LESSON"
+		  };
+
+		  const actionMap:actionMapType= {
+			name: "CHANGE_VIDEO_TITLE",
+			description: "CHANGE_VIDEO_DESCRIPTION",
+			lesson: "CHANGE_VIDEO_LESSON"
+		  };
+		  
+		  const actionType = actionMap[id as "name"|"description"|"lesson"];
+		  if (actionType) {
+			const payload:any = id === 'name' 
+			  ? { title: value, id: video?.id || "" }
+			  : id === 'lesson'
+				? { lesson: Number(value), id: video?.id || "" }
+				: { [id]: value, id: video?.id || "" };
+				
+			dispatch({
+			  type: actionType,
+			  payload
+			});
+		  }
+		}
+		
+		// Set local state based on field
+		switch (id) {
+		  case "name":
+			setname(value);
+			break;
+		  case "description":
+			setDescription(value);
+			break;
+		  case "lesson":
+			setLesson(Number(value));
+			break;
+		  default:
+			break;
+		}
+	}
+
+	function handleVideoUplode(){
+		if(!videoFile) return;
+		videoActions.addVideo({key,videoFile});
+		setVideoModal(false)
+	}
+	
 	return (
 		<Card className="my-5">
 			<CardHeader>
@@ -121,7 +175,7 @@ export default function AddLesson({
 					<Input 
 						className="col-span-4" 
 						value={name} 
-						onChange={(e)=>{setname(e.target.value)}}
+						onChange={(e)=>{handleChange(e)}}
 						id="name"
 						required
 					/>
@@ -130,17 +184,19 @@ export default function AddLesson({
 					<Label htmlFor="description">Description</Label>
 					<Textarea 
 						value={description} 
-						onChange={(e)=>setDescription(e.target.value)}
+						onChange={(e)=>{handleChange(e)}}
 						id="description"
 						required
-					/>
+						/>
 				</div>
 				<div>
-				<Label>Lesson</Label>
+				<Label htmlFor="lesson">Lesson</Label>
 				<Input
 					type="number"
 					value={lesson}
-					onChange={(e) => setLesson(Number(e.target.value))}
+					onChange={(e)=>{handleChange(e)}}
+					required
+					id="lesson"
 				/>
 				</div>
 			</CardHeader>
@@ -160,19 +216,14 @@ export default function AddLesson({
 					file={videoFile}
 					setFile={setVideoFile}
 					onCancel={()=>{}}
-					onUpload={()=>{
-						if(!videoFile) return;
-						console.log("uploding")
-						videoActions.addVideo({key,videoFile});
-						setVideoModal(false)
-					}}
+					onUpload={handleVideoUplode}
 					previewUrl={videoPreview}
 					setPreviewUrl={setVideoPreview}
 					setModalClose={setVideoModal}
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
-				<Button disabled={uploding} onClick={addVideo}>Add Video</Button>
+				{!update&&<Button disabled={uploding} onClick={addVideo}>Add Video</Button>}
 			</CardFooter>
 		</Card>
 	);

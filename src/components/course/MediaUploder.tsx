@@ -88,7 +88,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newFile = e.target.files?.[0]
         if (newFile) {
-            processFile(newFile)
+            processFile(newFile);
         }
     }
 
