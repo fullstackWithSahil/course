@@ -90,7 +90,7 @@ export default function AddLesson({
 				return;
 			}
 			const video = {
-				id: host + "/" + key,
+				id: key,
 				title: name,
 				description,
 				url: videoPreview,
