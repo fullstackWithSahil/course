@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 import { useCourseContext, Video } from "@/app/(noSidebar)/newCourse/[name]/Context";
-import { videoActions } from "@/app/(noSidebar)/newCourse/[name]/VideoStorage";
+import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[name]/VideoStorage";
 
 export default function AddLesson({
 	modulename,
@@ -29,6 +29,7 @@ export default function AddLesson({
 	video?:Video;
 }) {
     const { dispatch } = useCourseContext();
+	const {dispatch:VideoStorageDiapatch} = useVideoStorage();
 	const { userId } = useAuth();
 	const params = useParams();
 	
@@ -99,7 +100,8 @@ export default function AddLesson({
 			
 			dispatch({type: "ADD_VIDEO", payload: {moduleId, video}});
 			clearState();
-			videoActions.addVideo({key, videoFile});
+			const payload = videoActions.addVideo({key, videoFile});
+			VideoStorageDiapatch(payload);
 		} catch (error) {
 			toast("There was an error uploading the video. Please try again later...")
 		}
