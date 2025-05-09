@@ -1,4 +1,4 @@
-import React, { useState, useCallback, ChangeEvent, Dispatch, SetStateAction } from 'react'
+import React, { useState, useCallback, ChangeEvent, Dispatch, SetStateAction, useEffect } from 'react'
 import { Upload, X, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -8,9 +8,10 @@ interface MediaUploaderProps {
     setFile: (file: File | null) => void
     onCancel: () => void
     onUpload: () => void
-    previewUrl: string | null
+    previewUrl: string
     setPreviewUrl: Dispatch<SetStateAction<string>>
     setModalClose: (isOpen: boolean) => void
+    resetKey?: number // Add a key to trigger reset
 }
 
 const MediaUploader: React.FC<MediaUploaderProps> = ({
@@ -21,19 +22,33 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
     onUpload,
     previewUrl,
     setPreviewUrl,
+    setModalClose,
+    resetKey = 0,
 }) => {
     const [isDragging, setIsDragging] = useState(false)
-    const [localPreview, setLocalPreview] = useState<string | null>(previewUrl)
-    const [uploded,setUploded] = useState(false);
+    const [localPreview, setLocalPreview] = useState<string>(previewUrl)
+    const [uploaded, setUploaded] = useState(false)
+
+    // Reset component when resetKey changes
+    useEffect(() => {
+        if (resetKey > 0) {
+            if (localPreview) {
+                URL.revokeObjectURL(localPreview)
+            }
+            setLocalPreview("")
+            setUploaded(false)
+        }
+    }, [resetKey])
+
+    // Update local preview when previewUrl changes (for initialization)
+    useEffect(() => {
+        setLocalPreview(previewUrl)
+    }, [previewUrl])
 
     const handleUpload = () => {
-        if (localPreview) {
-            setPreviewUrl(localPreview)
-        }
-        onUpload();
-        setUploded(true);
-
-        // The parent component will handle modal closing through its own state
+        setPreviewUrl(localPreview)
+        onUpload()
+        setUploaded(true)
     }
 
     const acceptedTypes = {
@@ -88,7 +103,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newFile = e.target.files?.[0]
         if (newFile) {
-            processFile(newFile);
+            processFile(newFile)
         }
     }
 
@@ -97,7 +112,8 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
             URL.revokeObjectURL(localPreview)
         }
         setFile(null)
-        setLocalPreview(null)
+        setLocalPreview("")
+        setUploaded(false)
         onCancel()
     }
 
@@ -170,7 +186,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
                                 onChange={handleFileChange}
                                 className="hidden"
                             />
-                            Change {type === 'image' ? 'Image' : 'Video'}
+                            {/* Change {type === 'image' ? 'Image' : 'Video'} */}
                         </label>
                     </div>
                 ) : (
@@ -187,7 +203,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
                 )}
             </div>
             
-            {(file&&!uploded) && (
+            {(file && !uploaded) && (
                 <div className="flex justify-end gap-2">
                     <Button 
                         variant="outline" 

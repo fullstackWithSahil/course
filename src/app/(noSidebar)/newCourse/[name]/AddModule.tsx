@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { useCourseContext } from "./Context";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useVideoStorage } from "./VideoStorage";
 
 export default function AddModule() {
 	const [module, setModule] = useState("");
+	const {state:video} = useVideoStorage();
 	const { dispatch, state } = useCourseContext();
 
 	function addModule() {
@@ -20,6 +22,7 @@ export default function AddModule() {
 	async function uplodeCourse(){
 		try {
 			console.log(state);
+			console.log(video);
 		} catch (error) {
 			toast.error("there was an error uploding the course")
 		}

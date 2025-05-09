@@ -20,7 +20,7 @@ export default function Editor() {
 					/>
 					{module.videos.map((video)=><AddLesson
 						key={video.id}
-						moduleLength={module.videos.length+1}
+						moduleLength={module.videos.length}
 						modulename={module.name}
 						moduleId={module.id}
 						video={video}

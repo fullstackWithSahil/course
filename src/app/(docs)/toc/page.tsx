@@ -149,5 +149,3 @@ export default function Page(){
     </div>
   );
 };
-
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae fuga minus aliquid omnis perferendis labore nam sint, impedit laborum, eveniet quaerat quae quisquam perspiciatis earum maiores quam hic doloremque? Distinctio impedit, labore enim veritatis qui ut iusto. Similique, deleniti consequatur facilis accusamus veniam a perferendis, illo assumenda earum dolorem non facere exercitationem dicta eaque doloremque?
