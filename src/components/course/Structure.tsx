@@ -24,7 +24,7 @@ export default function Structure({
 						</AccordionTrigger>
 						<AccordionContent>
 							<ol>
-								{iteam.videos.map((v, i) => (
+								{iteam.videos.map((v) => (
 									<li key={v.id}>
 										lesson{v.lesson}:{v.title}
 									</li>

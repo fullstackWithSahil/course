@@ -6,7 +6,7 @@ import type { FormData } from "../Onboardingform"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSession, useUser } from "@clerk/nextjs"
+import { useSession} from "@clerk/nextjs"
 import supabaseClient from "@/lib/supabase"
 import { toast } from "sonner"
 

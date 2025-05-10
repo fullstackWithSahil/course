@@ -1,6 +1,6 @@
 "use client";
 import {io, Socket} from "socket.io-client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 export const SocketContext = createContext<Socket|null>(null);
@@ -15,7 +15,7 @@ export default function SocketProvider({ children }: { children: React.ReactNode
         return()=>{
             _socket.disconnect();
         }
-    },[])
+    },[id])
     return(
         <SocketContext.Provider value={socket}>
             {children}

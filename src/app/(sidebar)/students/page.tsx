@@ -8,7 +8,7 @@ export default async function Page() {
 	const user = await currentUser();
 	if (!user) return;
 
-	let { data, error } = await supabase
+	const { data, error } = await supabase
 		.from("students")
 		.select(`*,
 			course (

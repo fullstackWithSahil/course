@@ -87,7 +87,7 @@ export default function CourseInfoStep({ formData, updateFormData, nextStep, pre
       
       getLogoUrl();
     }
-  }, []);
+  });
 
   async function removeLogo(){
     const supabase = supabaseClient(session);

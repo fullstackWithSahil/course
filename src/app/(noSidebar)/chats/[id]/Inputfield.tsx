@@ -48,6 +48,7 @@ export default function Inputfield() {
         } catch (error) {
             toast.error("There was an error sending the message");
             setLoading(false);
+            console.log(error);
         }
     }
   return (

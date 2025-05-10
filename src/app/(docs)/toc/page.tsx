@@ -15,7 +15,7 @@ export default function Page(){
             1. Introduction
           </h2>
           <p className="text-gray-700">
-            Welcome to buisnesstoolsonline.com ("Company," "we," "our," "us"). These Terms of Service ("Terms") govern your use of our website and services. By accessing or using our platform, you agree to comply with these Terms. If you do not agree, you must not use our services.
+            Welcome to buisnesstoolsonline.com (&quot;Company&quot;, &quot;we,&quot; &quot;our,&quot; &quot;us&quot;). These Terms of Service (&quot;Terms&quot;) govern your use of our website and services. By accessing or using our platform, you agree to comply with these Terms. If you do not agree, you must not use our services.
           </p>
         </div>
         

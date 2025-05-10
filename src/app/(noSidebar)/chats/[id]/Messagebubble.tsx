@@ -12,11 +12,13 @@ export default function Messagebubble() {
 	const {state} = useMessages();
     const {session} = useSession();
     
-    if(!session) return null;
     const {addMessage,updateMessage,deleteMessage} = useMessageActions();
 	const socket = useContext(SocketContext);
-	if(!socket) return null;
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
+
 	useEffect(()=>{
+		if(!session) return;
+		if(!socket) return;
 		socket.on("receiveMessage",(message)=>{
 			addMessage({
 				...message,
@@ -35,7 +37,6 @@ export default function Messagebubble() {
 		});
 	},[id]);
     
-	const scrollContainerRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
 		setTimeout(() => {
 			const container = scrollContainerRef.current;
@@ -56,7 +57,7 @@ export default function Messagebubble() {
 					firstname={message.firstname || ""}
 					created_at={message.created_at}
 					id={message.id}
-					isUserMessage={message.sender === session.user.id}
+					isUserMessage={message.sender === session?.user.id}
 					profile={message.profile}
 					message={message.message || ""}
 					/>

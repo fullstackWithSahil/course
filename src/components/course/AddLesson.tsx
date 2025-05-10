@@ -54,12 +54,12 @@ export default function AddLesson({
 	
 	//image states
     const [image, setImage] = useState<File|null>(null);
-    const [imageModal, setImageModal] = useState(false);
+    const [_, setImageModal] = useState(false);
     const [imagePreview, setImagePreview] = useState(video?.thumbnail || "");
 	
 	//video states
     const [videoFile, setVideoFile] = useState<File|null>(null);
-    const [videoModal, setVideoModal] = useState(false);
+    const [__, setVideoModal] = useState(false);
     const [videoPreview, setVideoPreview] = useState(video?.url || "");
 
 	function clearState() {
@@ -234,7 +234,6 @@ export default function AddLesson({
 					onUpload={uploadThumbnail}
 					previewUrl={imagePreview}
 					setPreviewUrl={setImagePreview}
-					setModalClose={setImageModal}
 					resetKey={resetCounter}
 				/>
 				<MediaUploader
@@ -245,7 +244,6 @@ export default function AddLesson({
 					onUpload={handleVideoUpload}
 					previewUrl={videoPreview}
 					setPreviewUrl={setVideoPreview}
-					setModalClose={setVideoModal}
 					resetKey={resetCounter}
 				/>
 			</CardContent>

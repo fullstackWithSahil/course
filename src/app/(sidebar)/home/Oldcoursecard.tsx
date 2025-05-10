@@ -54,7 +54,7 @@ export default function CourseCard(course:propTypes){
             }
         }
         getData();
-    },[]);
+    });
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-US', {

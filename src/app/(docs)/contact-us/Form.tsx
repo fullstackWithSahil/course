@@ -39,7 +39,8 @@ export default function Form() {
             await sendDiscordMessage(message);
             setSubmitted(true);
         } catch (error) {
-            toast("Something went wrong, please try again later")            
+            toast("Something went wrong, please try again later")
+			console.log(error);       
         }
 	};
     
@@ -52,7 +53,7 @@ export default function Form() {
 			{submitted ? (
 				<div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
 					<p className="font-medium">Thank you for your message!</p>
-					<p>We'll get back to you as soon as possible.</p>
+					<p>We&apos;ll get back to you as soon as possible.</p>
 				</div>
 			) : (
 				<form onSubmit={handleSubmit}>

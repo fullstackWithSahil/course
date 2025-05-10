@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import { FC } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

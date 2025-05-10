@@ -71,7 +71,7 @@ export default function Newcourse() {
                 reader.onerror = () => reject(reader.error);
                 reader.readAsDataURL(thumbnail);
             });
-            const lambdaResponse = await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
+            await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
                 key: key,
                 imageBase64: base64Image
             });

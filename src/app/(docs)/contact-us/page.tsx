@@ -6,7 +6,7 @@ export default function Page(){
       <div className="bg-gray-50 rounded-lg shadow-md overflow-hidden">
         <div className="bg-blue-600 p-6 text-white">
           <h1 className="text-3xl font-bold text-center">Contact Us</h1>
-          <p className="text-center mt-2 text-blue-100">We'd love to hear from you</p>
+          <p className="text-center mt-2 text-blue-100">We&apos;d love to hear from you</p>
         </div>
 
         <div className="p-6 md:p-8">

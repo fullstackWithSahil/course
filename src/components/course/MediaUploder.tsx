@@ -10,7 +10,6 @@ interface MediaUploaderProps {
     onUpload: () => void
     previewUrl: string
     setPreviewUrl: Dispatch<SetStateAction<string>>
-    setModalClose: (isOpen: boolean) => void
     resetKey?: number // Add a key to trigger reset
 }
 
@@ -22,7 +21,6 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
     onUpload,
     previewUrl,
     setPreviewUrl,
-    setModalClose,
     resetKey = 0,
 }) => {
     const [isDragging, setIsDragging] = useState(false)
@@ -38,7 +36,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
             setLocalPreview("")
             setUploaded(false)
         }
-    }, [resetKey])
+    }, [resetKey,localPreview])
 
     // Update local preview when previewUrl changes (for initialization)
     useEffect(() => {
