@@ -32,6 +32,7 @@ export type Action =
   |{ type: "CHANGE_VIDEO_LESSON"; payload: { id: string; lesson: number} }
   |{ type: "CHANGE_VIDEO_URL"; payload: { id: string; url: string} }
   |{ type: "CHANGE_VIDEO_THUMBNAIL"; payload: { id: string; thumbnail: string} }
+  |{ type: "DELETE_VIDEO"; payload: { moduleId: string; videoId: string} }
 
 
 export function reducer(state: State, action: Action): State {
@@ -93,6 +94,17 @@ export function reducer(state: State, action: Action): State {
               : video
           ),
         }));
+      case "DELETE_VIDEO":
+        return state.map((module) =>
+          module.id === action.payload.moduleId
+            ? {
+                ...module,
+                videos: module.videos.filter(
+                  (video) => video.id !== action.payload.videoId
+                ),
+              }
+            : module
+        );
     default:
       return state;
   }

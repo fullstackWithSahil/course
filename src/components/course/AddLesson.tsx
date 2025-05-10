@@ -179,6 +179,12 @@ export default function AddLesson({
 		}
 	}
 
+	function handleDelete(){
+		dispatch({type:"DELETE_VIDEO",payload:{moduleId,videoId:video?.id||""}});
+		const payload = videoActions.removeVideo(video?.id||"");
+		VideoStorageDiapatch(payload);
+	}
+
 	function handleVideoUpload() {
 		if (!videoFile) return;
 		videoActions.addVideo({key, videoFile});
@@ -244,7 +250,7 @@ export default function AddLesson({
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
-				{!update && <Button disabled={uploading} onClick={addVideo}>Add Video</Button>}
+				{!update?<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>}
 			</CardFooter>
 		</Card>
 	);
