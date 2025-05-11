@@ -36,7 +36,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({
             setLocalPreview("")
             setUploaded(false)
         }
-    }, [resetKey,localPreview])
+    }, [resetKey])
 
     // Update local preview when previewUrl changes (for initialization)
     useEffect(() => {

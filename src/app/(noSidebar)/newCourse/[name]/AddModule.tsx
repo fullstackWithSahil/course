@@ -101,7 +101,7 @@ export default function AddModule() {
               title: video.title,
               description: video.description,
               lesson: video.lesson,
-              course: 130
+              course: 134
             };
             
             const { error } = await supabase.from("videos").insert(videoToUpload);
