@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Editnote from "./Editnote";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -92,8 +94,10 @@ export const columns: ColumnDef<LeadType>[] = [
 		cell: ({ row }) => {
 			const lead = row.original;
 			const router = useRouter();
+			const [open, setOpen] = useState(false);
 
 			return (
+				<>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="ghost" className="h-8 w-8 p-0">
@@ -114,8 +118,19 @@ export const columns: ColumnDef<LeadType>[] = [
 						<DropdownMenuItem onClick={()=>{router.push(`/email/${lead.email}}`)}}>
 							Send email
 						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={()=>{setOpen(true)}}>
+							Edit note
+						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
+				<Editnote 
+					id={lead.id} 
+					onOpenChange={setOpen} 
+					open={open} 
+					previosusNote={lead.note||""} 
+				/>
+				</>
 			);
 		},
 	},

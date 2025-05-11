@@ -33,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { LeadForm } from "./lead-form";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -48,6 +49,7 @@ export function DataTable<TData, TValue>({
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		{}
 	);
+	const [open, setOpen] = useState(false);
     const [rowSelection, setRowSelection] = useState({})
 	const table = useReactTable({
 		data,
@@ -111,10 +113,6 @@ export function DataTable<TData, TValue>({
 							})}
 					</DropdownMenuContent>
 				</DropdownMenu>
-                <div className="flex-1 text-sm text-muted-foreground mx-2">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
 			</div>
 
 			<div className="rounded-md border">
@@ -170,7 +168,9 @@ export function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
+			<div className="flex items-center justify-between space-x-2 py-4">
+				<Button onClick={()=>setOpen(true)}>Insert new Lead</Button>
+				<div>
 				<Button
 					variant="outline"
 					size="sm"
@@ -187,7 +187,9 @@ export function DataTable<TData, TValue>({
 				>
 					Next
 				</Button>
+				</div>
 			</div>
+			{open&&<LeadForm open={open} onOpenChange={setOpen}/>}
 		</div>
 	);
 }

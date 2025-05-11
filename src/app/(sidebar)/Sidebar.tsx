@@ -42,11 +42,6 @@ const tabs = [
     href: "/feedback",
   },
   {
-    label: "FAQ",
-    icon: <Quote />,
-    href: "/faq",
-  },
-  {
     label:"Leads",
     icon:<Magnet/>,
     href:"/leads"

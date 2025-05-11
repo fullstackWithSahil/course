@@ -23,17 +23,19 @@ import {
 } from "@/components/ui/select";
 import { LeadType } from "./columns";
 import { toast } from "sonner";
+import supabaseClient from "@/lib/supabase";
+import { useSession } from "@clerk/nextjs";
 
 interface LeadFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   lead?: LeadType;
-  onSave: (lead: Partial<LeadType>) => Promise<void>;
 }
 
-export function LeadForm({ open, onOpenChange, lead, onSave }: LeadFormProps) {
+export function LeadForm({ open, onOpenChange, lead }: LeadFormProps) {
   const isEditing = !!lead;
   const router = useRouter();
+  const {session} = useSession();
 
   // Form state
   const [formData, setFormData] = useState<Partial<LeadType>>(
@@ -77,8 +79,13 @@ export function LeadForm({ open, onOpenChange, lead, onSave }: LeadFormProps) {
     setIsSubmitting(true);
 
     try {
-      await onSave(formData);
-      
+      const supabase = supabaseClient(session);
+      const {error} = await supabase
+        .from("leads")
+        .insert({...formData,teacher: session?.user.id})
+      if (error) {
+        toast("There was a problem saving the lead. Please try again.");
+      }
       toast(isEditing 
           ? "The lead has been successfully updated." 
           : "A new lead has been created.",

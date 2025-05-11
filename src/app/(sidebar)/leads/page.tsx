@@ -13,13 +13,7 @@ export default async function Page() {
 		.select(`*`)
 		.eq("teacher", user.id);
 
-	if (!data || data.length == 0) {
-		return (
-			<div className="my-5 mx-3 h-3/4 bg-gray-200 border-2 rounded-2xl flex items-center justify-center text-2xl font-bold">
-				<h1>There are no leads yet</h1>
-			</div>
-		);
-	}
+	if(!data) return;
 
 	const formated = data.map((lead) => {
 		let date = new Date(lead.created_at);
