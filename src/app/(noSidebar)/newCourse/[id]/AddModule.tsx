@@ -9,8 +9,9 @@ import supabaseClient from "@/lib/supabase";
 import { useSession, useUser } from "@clerk/nextjs";
 import { Progress } from "@/components/ui/progress";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
+import { url } from "inspector";
 
 const LoadingSpinner = () => {
   return (
@@ -26,6 +27,7 @@ export default function AddModule() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const {id:courseId} = useParams();
 
   const [module, setModule] = useState("");
   const { state: videoFiles } = useVideoStorage();
@@ -72,7 +74,6 @@ export default function AddModule() {
       }
       
       const supabase = supabaseClient(session);
-      
       // Count total videos across all modules
       let totalVideos = 0;
       state.forEach(module => {
@@ -84,7 +85,8 @@ export default function AddModule() {
         setLoading(false);
         return;
       }
-      
+    	const host = "https://buisnesstools-course.b-cdn.net";
+
       let uploadedCount = 0;
       
       // Process each module sequentially
@@ -97,11 +99,11 @@ export default function AddModule() {
               teacher: user?.id,
               module: module.name,
               thumbnail: video.thumbnail,
-              url: video.url,
+              url:`${host}/${video.id}`,//id contains courseId/modulename/uuid
               title: video.title,
               description: video.description,
               lesson: video.lesson,
-              course: 134
+              course: Number(courseId)
             };
             
             const { error } = await supabase.from("videos").insert(videoToUpload);
@@ -113,7 +115,6 @@ export default function AddModule() {
             }
             
             // Get the video from the VideoStorage context
-            const key = `${user?.id}/${module.name}/${video.lesson}`;
             let videoToTranscode = null;
             
             videoFiles.videos.forEach((videoFile) => {
@@ -123,14 +124,14 @@ export default function AddModule() {
             });
             
             if (!videoToTranscode) {
-              console.error(`Video file not found for key: ${key}`);
+              console.error(`Video file not found for key: ${video.id}`);
               continue;
             }
             
             // Queue the video for transcoding
             const videoData = new FormData();
             videoData.append("video", videoToTranscode);
-            videoData.append("key", key);
+            videoData.append("key", video.id);
             
             await axios.post("http://localhost:8080/api/transcode", videoData);
             
@@ -140,7 +141,6 @@ export default function AddModule() {
           } catch (videoError) {
             console.error(`Error processing video ${video.title}:`, videoError);
             toast.error(`Error processing ${video.title}`);
-            // Continue with next video despite error
           }
         }
       }

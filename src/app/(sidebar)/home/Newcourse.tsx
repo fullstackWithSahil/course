@@ -71,19 +71,20 @@ export default function Newcourse() {
                 reader.onerror = () => reject(reader.error);
                 reader.readAsDataURL(thumbnail);
             });
-            await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
+            const res =await axios.post('https://xhqbbboit44bex2ipwtqqda55a0sxuho.lambda-url.us-east-1.on.aws/',{
                 key: key,
                 imageBase64: base64Image
             });
+            console.log({res})
 
             //uploding course metadata
-            const { error: insertError } = await supabase.from("courses").insert({
+            const { data,error: insertError } = await supabase.from("courses").insert({
                 teacher: userId,
                 name,
                 description: desc,
                 thumbnail: `https://buisnesstools-course.b-cdn.net/${key}.webp`,
                 price,
-            });
+            }).select("*").single();
 
             //handling errors related to uploding the course
             if(error||insertError){
@@ -92,7 +93,7 @@ export default function Newcourse() {
             }
 
             //redirecting them to course uploder
-            router.push(`/newCourse/${name}`);
+            router.push(`/newCourse/${data?.id}`);
         } catch (error) {
             console.log(error)
             toast("something went wrong. Try again later...")

@@ -24,6 +24,7 @@ import { useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import sendDiscordMessage from "@/lib/discord";
 
 type propTypes ={
     description: string ;
@@ -65,32 +66,7 @@ export default function CourseCard(course:propTypes){
     
     const handleDelete = async () => {
         try {
-            const supabase = supabaseClient(session);
-
-            const { error: videosError } = await supabase
-                .from('videos')
-                .delete()
-                .eq('course', course.id)
-                .select();
-            
-            if (videosError) {
-                console.error("Error deleting videos:", videosError);
-                toast("There was an error deleting the course videos. Please try again later.");
-                return;
-            }
-            
-            // Then delete the course itself
-            const { error: courseError } = await supabase
-                .from('courses')
-                .delete()
-                .eq('id', course.id);
-                
-            if (courseError) {
-                console.error("Error deleting course:", courseError);
-                toast("There was an error deleting the course. Please try again later.");
-                return;
-            }
-            
+            await sendDiscordMessage(`a request has been made to delete course ${course.id}`)            
             console.log('Successfully deleted course:', course.id);
             toast("Course deleted successfully");
             setDeleteDialogOpen(false);

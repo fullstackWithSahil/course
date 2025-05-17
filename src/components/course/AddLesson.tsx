@@ -12,8 +12,8 @@ import { useAuth } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { useCourseContext, Video } from "@/app/(noSidebar)/newCourse/[name]/Context";
-import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[name]/VideoStorage";
+import { useCourseContext, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
+import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
 
 export default function AddLesson({
 	modulename,
@@ -33,7 +33,7 @@ export default function AddLesson({
 	const { userId } = useAuth();
 	const params = useParams();
 	
-	const course = params.name; 
+	const course = params.id; 
 	const host = "https://buisnesstools-course.b-cdn.net";
 	const [id, setId] = useState("");
 	useEffect(() => {

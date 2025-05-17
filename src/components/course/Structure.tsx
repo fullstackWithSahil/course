@@ -1,5 +1,5 @@
 "use client";
-import { State } from "@/app/(noSidebar)/newCourse/[name]/Context";
+import { State } from "@/app/(noSidebar)/newCourse/[id]/Context";
 import {
 	Accordion,
 	AccordionContent,
