@@ -27,12 +27,10 @@ export default function Messagebubble() {
 		});
 
 		socket.on("receiveEditMessage",(message)=>{
-			console.log(message);
 			updateMessage(message.id,message);
 		});
 		
 		socket.on("receiveDeleteMessage",(id)=>{
-			console.log(id);
 			deleteMessage(id);
 		});
 	},[id]);

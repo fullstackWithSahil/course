@@ -27,7 +27,7 @@ export default function layout({children}:{children:ReactNode}) {
         <section className='w-1/4 h-full mt-5 items-center gap-2 hidden md:flex flex-col'>
             <Sidebar/>
         </section>
-        <section className='h-full w-full md:w-3/4'>
+        <section className='h-full w-full md:w-3/4 overflow-y-scroll'>
             {children}
         </section>
     </main>
