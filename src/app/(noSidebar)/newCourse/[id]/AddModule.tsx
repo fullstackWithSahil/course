@@ -11,7 +11,6 @@ import { Progress } from "@/components/ui/progress";
 import { Loader2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import { url } from "inspector";
 
 const LoadingSpinner = () => {
   return (

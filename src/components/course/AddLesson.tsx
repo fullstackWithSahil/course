@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChangeEvent, useEffect,useState } from "react";
+import { ChangeEvent, Dispatch, useEffect,useState } from "react";
 import MediaUploader from "@/components/course/MediaUploder";
 import { Label } from "@/components/ui/label";
 import { v4 as uuidv4 } from 'uuid';
@@ -12,21 +12,25 @@ import { useAuth } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { useCourseContext, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
+import { Action, State, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
 import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
+
+type useCourseContextType = () => { state: State; dispatch: Dispatch<Action>; }
 
 export default function AddLesson({
 	modulename,
 	moduleLength,
 	moduleId,
 	video,
-	update
+	update,
+	useCourseContext,
 }:{
 	modulename:string;
 	moduleLength:number;
 	moduleId:string;
 	update:boolean;
 	video?:Video;
+	useCourseContext:useCourseContextType;
 }) {
     const { dispatch } = useCourseContext();
 	const {dispatch:VideoStorageDiapatch} = useVideoStorage();
@@ -248,7 +252,10 @@ export default function AddLesson({
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
-				{!update?<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>}
+				{!update?
+					<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:
+					<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>
+				}
 			</CardFooter>
 		</Card>
 	);
