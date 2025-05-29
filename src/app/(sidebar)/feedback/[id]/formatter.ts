@@ -20,6 +20,7 @@ export type VideoType = {
 	url: string;
 	thumbnail: string;
 	createdAt: string;
+	lesson:number;
 };
 
 type Module = {
@@ -50,6 +51,7 @@ export function formatting(data: DataType) {
 					url: item.url ?? "",
 					thumbnail: item.thumbnail ?? "",
 					createdAt: item.created_at,
+					lesson:item.lesson??0,
 				};
 
 				block.videos.push(video);
