@@ -27,7 +27,6 @@ export default function AddModule() {
     }
     
     function uploadCourse(){
-        throw new Error("Function not implemented.");
     }
 
     return (
