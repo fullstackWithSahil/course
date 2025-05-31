@@ -12,8 +12,10 @@ import { useAuth } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { Action, State, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
-import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
+import { Action, State, Video } from "@/app/(noSidebar)/edit/[id]/Context";
+import { useVideoStorage, videoActions } from "@/app/(noSidebar)/edit/[id]/VideoStorage";
+import DeleteButton from "./DeleteButton";
+import Videouploder from "./Videouploder";
 
 type useCourseContextType = ()=>{state:State,dispatch:Dispatch<Action>}
 
@@ -101,7 +103,8 @@ export default function AddLesson({
 				description,
 				url: videoPreview,
 				thumbnail: `${host}/${key}.webp`,
-				lesson
+				lesson,
+                existing:false
 			};
 			
 			dispatch({type: "ADD_VIDEO", payload: {moduleId, video}});
@@ -184,13 +187,7 @@ export default function AddLesson({
 			break;
 		}
 	}
-	
-	function handleDelete() {
-		dispatch({ type: "DELETE_VIDEO", payload: { moduleId,videoId:video?.id||"" } });
-		const payload = videoActions.removeVideo(video?.id||"");
-		VideoStorageDiapatch(payload);
-	}
-	
+
 	function handleVideoUpload() {
 		if (!videoFile) return;
 		videoActions.addVideo({key, videoFile});
@@ -242,23 +239,20 @@ export default function AddLesson({
 					setPreviewUrl={setImagePreview}
 					resetKey={resetCounter}
 				/>
-				<MediaUploader
-					type="image"
-					file={videoFile}
-					setFile={setVideoFile}
-					onCancel={() => {}}
-					onUpload={handleVideoUpload}
-					previewUrl={videoPreview}
-					setPreviewUrl={setVideoPreview}
-					resetKey={resetCounter}
+				<Videouploder
+					exisiting={exisiting}
+					videoFile={videoFile}
+					setVideoFile={setVideoFile}
+					handleVideoUpload={handleVideoUpload}
+					videoPreview={videoPreview}
+					setVideoPreview={setVideoPreview}
+					resetCounter={resetCounter}
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
 				{!update?
 					<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:
-					<Button variant={"destructive"} onClick={handleDelete}>
-						Delete
-					</Button>
+					<DeleteButton existing={exisiting} moduleId={moduleId} videoId={video?.id||""}/>
 				}
 			</CardFooter>
 		</Card>

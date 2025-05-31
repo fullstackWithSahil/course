@@ -36,6 +36,7 @@ export default function formatter(data:DataType) {
 					url: item.url ?? "",
 					thumbnail: item.thumbnail ?? "",
                     lesson:item.lesson??0,
+					existing:true,
 				};
 
 				block.videos.push(video);
