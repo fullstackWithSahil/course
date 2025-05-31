@@ -38,6 +38,7 @@ export default function Videouploder({
 					src={
 						"https://buisnesstools-course.b-cdn.net/user_2xgDvRU2MqZcHt3qI2rVHtErdFK/139/start/15cd08b9-863d-4f2c-9065-cb2e4e0a6e1a"
 					}
+					disabled={true}
 				/>
 			)}
 		</div>

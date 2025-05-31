@@ -7,8 +7,25 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useCourseContext } from "./Context";
+import { useSession } from "@clerk/nextjs";
+import supabaseClient from "@/lib/supabase";
+import { useVideoStorage } from "./VideoStorage";
+import axios from "axios";
+
+type Video = {
+    id: string;
+    title: string;
+    description: string;
+    url: string;
+    thumbnail: string;
+    lesson: number;
+    existing: boolean;
+    module:string;
+}
 
 export default function AddModule() {
+    const {session} = useSession();
+    const {state:VideoStorage} = useVideoStorage()
     const {state,dispatch} = useCourseContext();
     const [loading,setLoading] = useState(false);
     const [module,setModule] = useState("");
@@ -27,6 +44,87 @@ export default function AddModule() {
     }
     
     function uploadCourse(){
+        //loading state and supabase
+        setLoading(true);
+        const supabase = supabaseClient(session);
+
+        //listing promises
+        const existingVideos:Video[] = []
+        const newVideos:Video[] = []
+        state.forEach((mod)=>{
+            mod.videos.forEach((vid)=>{
+                if(vid.existing){
+                    existingVideos.push({...vid,module})
+                }else{
+                    newVideos.push({...vid,module})
+                }
+            })
+        })
+
+        //change metadata for existing videos
+        existingVideos.map((vid)=>{
+            return new Promise((resolve,reject)=>{
+                supabase.from("videos").update({
+                    title:vid.title,
+                    description:vid.description,
+                    lesson:vid.lesson,
+                    module:vid.module
+                }).then(({error})=>{
+                    if(error){
+                        reject(error)
+                    }else{
+                        resolve("videos updated")
+                    }
+                })
+            })
+        })
+        Promise.all(existingVideos).then(()=>{
+            toast("Metadata for all the existing videos are updated")
+        }).catch(()=>{
+            toast("There was an error updataing the metadata")
+        })
+        
+        //create entries for new videos
+        newVideos.map((vid)=>{
+            return new Promise((resolve,reject)=>{
+                supabase.from("videos").insert({
+                    title:vid.title,
+                    description:vid.description,
+                    module:vid.module,
+                    lesson:vid.lesson,
+                    thumbnail:vid.thumbnail,
+                    url:vid.url
+                }).then(({error})=>{
+                    if(error){
+                        reject(error)
+                    }else{
+                        resolve("videos updated")
+                    }
+                })
+            })
+        })
+        Promise.all(newVideos).then(()=>{
+            toast("New video metadata added")
+        }).catch(()=>{
+            toast("There was an error adding the metadata for new videos")
+        })
+
+        //state to track uplode progress
+        let uploadedCount =0;
+        const totalVideos = VideoStorage.videos.length;
+
+        //uploding the video files
+        VideoStorage.videos.forEach((video)=>{
+            const videoData = new FormData();
+            videoData.append("video",video.videoFile);
+            videoData.append("key", video.key);
+            axios.post("http://localhost:8080/api/transcode", videoData).then(()=>{
+
+            })
+        })
+        uploadedCount++;
+        setUploadProgress(Math.floor((uploadedCount / totalVideos) * 100));
+        setLoading(false);
     }
 
     return (
