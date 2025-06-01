@@ -78,6 +78,7 @@ export default function Newcourse() {
             console.log({res})
 
             //uploding course metadata
+            
             const { data,error: insertError } = await supabase.from("courses").insert({
                 teacher: userId,
                 name,

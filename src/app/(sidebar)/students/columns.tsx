@@ -18,16 +18,16 @@ import { FC } from "react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type StudentsType ={
-    course: string;
-    created_at: string;
-    email: string | null;
-    id: number;
-    name: string | null;
-    note: string | null;
-    student: string | null;
-    teacher: string | null;
-}
+export type StudentsType = {
+	course: string;
+	created_at: string;
+	email: string | null;
+	id: number;
+	name: string | null;
+	note: string | null;
+	student: string | null;
+	teacher: string | null;
+};
 
 export const columns: ColumnDef<StudentsType>[] = [
 	{
@@ -88,35 +88,47 @@ export const columns: ColumnDef<StudentsType>[] = [
 		header: "Actions",
 		cell: ({ row }) => {
 			const student = row.original;
-			const router = useRouter();
-
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-							onClick={() =>
-								navigator.clipboard.writeText(student.email||"")
-							}
-						>
-							Copy email
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={()=>{router.push(`/email/${student.student}`)}}>
-							Send message
-						</DropdownMenuItem>
-						<DropdownMenuItem onClick={()=>{router.push(`/chats/${student.student}`)}}>
-							Send email
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			);
+			return <CellIteam student={student}/>;
 		},
 	},
 ];
+
+function CellIteam({student}:{student:any}) {
+	const router = useRouter();
+
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant="ghost" className="h-8 w-8 p-0">
+					<span className="sr-only">Open menu</span>
+					<MoreHorizontal className="h-4 w-4" />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuLabel>Actions</DropdownMenuLabel>
+				<DropdownMenuItem
+					onClick={() =>
+						navigator.clipboard.writeText(student.email || "")
+					}
+				>
+					Copy email
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onClick={() => {
+						router.push(`/email/${student.student}`);
+					}}
+				>
+					Send message
+				</DropdownMenuItem>
+				<DropdownMenuItem
+					onClick={() => {
+						router.push(`/chats/${student.student}`);
+					}}
+				>
+					Send email
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
+}

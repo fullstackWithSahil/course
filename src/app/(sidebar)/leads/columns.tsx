@@ -20,15 +20,15 @@ import Editnote from "./Editnote";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type LeadType ={
-    created_at: string;
-    email: string | null;
-    id: number;
-    name: string | null;
-    note: string | null;
-    source: string | null;
-    teacher: string | null;
-}
+export type LeadType = {
+	created_at: string;
+	email: string | null;
+	id: number;
+	name: string | null;
+	note: string | null;
+	source: string | null;
+	teacher: string | null;
+};
 
 export const columns: ColumnDef<LeadType>[] = [
 	{
@@ -93,45 +93,57 @@ export const columns: ColumnDef<LeadType>[] = [
 		header: "Actions",
 		cell: ({ row }) => {
 			const lead = row.original;
-			const router = useRouter();
-			const [open, setOpen] = useState(false);
-
-			return (
-				<>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-							onClick={() =>
-								navigator.clipboard.writeText(lead.email||"")
-							}
-						>
-							Copy email
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={()=>{router.push(`/email/${lead.email}}`)}}>
-							Send email
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={()=>{setOpen(true)}}>
-							Edit note
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-				<Editnote 
-					id={lead.id} 
-					onOpenChange={setOpen} 
-					open={open} 
-					previosusNote={lead.note||""} 
-				/>
-				</>
-			);
+			return <ColumnIteam lead={lead} />;
 		},
 	},
 ];
+
+function ColumnIteam({ lead }: { lead: any }) {
+	const router = useRouter();
+	const [open, setOpen] = useState(false);
+
+	return (
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost" className="h-8 w-8 p-0">
+						<span className="sr-only">Open menu</span>
+						<MoreHorizontal className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuLabel>Actions</DropdownMenuLabel>
+					<DropdownMenuItem
+						onClick={() =>
+							navigator.clipboard.writeText(lead.email || "")
+						}
+					>
+						Copy email
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={() => {
+							router.push(`/email/${lead.email}}`);
+						}}
+					>
+						Send email
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={() => {
+							setOpen(true);
+						}}
+					>
+						Edit note
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+			<Editnote
+				id={lead.id}
+				onOpenChange={setOpen}
+				open={open}
+				previosusNote={lead.note || ""}
+			/>
+		</>
+	);
+}

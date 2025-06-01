@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { Action, State, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
 import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
 
-type useCourseContextType = ()=>{state:State,dispatch:Dispatch<Action>}
+type useCourseContextType = () => { state: State; dispatch: Dispatch<Action>; }
 
 export default function AddLesson({
 	modulename,
@@ -24,7 +24,6 @@ export default function AddLesson({
 	video,
 	update,
 	useCourseContext,
-	exisiting=false,
 }:{
 	modulename:string;
 	moduleLength:number;
@@ -32,7 +31,6 @@ export default function AddLesson({
 	update:boolean;
 	video?:Video;
 	useCourseContext:useCourseContextType;
-	exisiting?:boolean;
 }) {
     const { dispatch } = useCourseContext();
 	const {dispatch:VideoStorageDiapatch} = useVideoStorage();
@@ -184,13 +182,13 @@ export default function AddLesson({
 			break;
 		}
 	}
-	
-	function handleDelete() {
-		dispatch({ type: "DELETE_VIDEO", payload: { moduleId,videoId:video?.id||"" } });
+
+	function handleDelete(){
+		dispatch({type:"DELETE_VIDEO",payload:{moduleId,videoId:video?.id||""}});
 		const payload = videoActions.removeVideo(video?.id||"");
 		VideoStorageDiapatch(payload);
 	}
-	
+
 	function handleVideoUpload() {
 		if (!videoFile) return;
 		videoActions.addVideo({key, videoFile});
@@ -243,7 +241,7 @@ export default function AddLesson({
 					resetKey={resetCounter}
 				/>
 				<MediaUploader
-					type="image"
+					type="video"
 					file={videoFile}
 					setFile={setVideoFile}
 					onCancel={() => {}}
@@ -256,9 +254,7 @@ export default function AddLesson({
 			<CardFooter className="flex justify-end">
 				{!update?
 					<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:
-					<Button variant={"destructive"} onClick={handleDelete}>
-						Delete
-					</Button>
+					<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>
 				}
 			</CardFooter>
 		</Card>

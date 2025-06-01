@@ -22,7 +22,7 @@ export default function Page() {
 				console.log(error)
 				toast.error("Error fetching messages");
 			})
-	}, [id]);
+	}, [id,addMessage,clearMessages]);
 
 	return (
 		<div className="w-full">

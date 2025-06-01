@@ -11,6 +11,7 @@ import { useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useVideoStorage } from "./VideoStorage";
 import axios from "axios";
+import { useParams } from "next/navigation";
 
 type Video = {
     id: string;
@@ -30,6 +31,7 @@ export default function AddModule() {
     const [loading,setLoading] = useState(false);
     const [module,setModule] = useState("");
     const [uploadProgress, setUploadProgress] = useState(0);
+    const {id:courseId} = useParams();
 
     function addModule() {
         if (!module) {
@@ -93,7 +95,8 @@ export default function AddModule() {
                     module:vid.module,
                     lesson:vid.lesson,
                     thumbnail:vid.thumbnail,
-                    url:vid.url
+                    url:vid.url,
+                    course:Number(courseId),
                 }).then(({error})=>{
                     if(error){
                         reject(error)
@@ -118,8 +121,9 @@ export default function AddModule() {
             const videoData = new FormData();
             videoData.append("video",video.videoFile);
             videoData.append("key", video.key);
-            axios.post("http://localhost:8080/api/transcode", videoData).then(()=>{
-
+            axios.post("http://localhost:8080/api/transcode", videoData).catch((error)=>{
+                toast("there was an error uploding the video");
+                console.log({error});
             })
         })
         uploadedCount++;

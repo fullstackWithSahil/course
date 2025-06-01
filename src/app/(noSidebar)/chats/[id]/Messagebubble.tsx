@@ -33,7 +33,7 @@ export default function Messagebubble() {
 		socket.on("receiveDeleteMessage",(id)=>{
 			deleteMessage(id);
 		});
-	},[id]);
+	},[id,addMessage,deleteMessage,session,socket,updateMessage]);
     
     useEffect(() => {
 		setTimeout(() => {

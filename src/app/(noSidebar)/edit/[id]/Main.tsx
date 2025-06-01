@@ -15,9 +15,9 @@ export default function Main() {
     const { dispatch } = useCourseContext();
 	const { id } = useParams();
 	const { session } = useSession();
-	const supabase = supabaseClient(session);
-
+	
 	useEffect(() => {
+		const supabase = supabaseClient(session);
 		supabase
 			.from("videos")
 			.select("*")
@@ -26,7 +26,7 @@ export default function Main() {
 				const blocks = formatter(data);
 				dispatch({ type: "ADD_EXISTING_MODULES", payload: blocks });
 			});
-	}, []);
+	}, [id,dispatch,session]);
 	return (
 		<main className="w-full h-[90vh] flex">
 			<Structure context={useCourseContext} />

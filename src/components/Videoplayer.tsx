@@ -56,7 +56,7 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
     if (touchDuration < 200) {
       playPause();
     }
-  }, [lastTouchTime]);
+  }, [lastTouchTime,playPause]);
 
   // Auto-hide controls
   useEffect(() => {
@@ -115,7 +115,7 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
         }
       }
     },
-    [paused, disabled]
+    [skip,paused, disabled,playPause]
   );
 
   useEffect(() => {
@@ -202,7 +202,7 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
         playerRef.current.dispose();
       }
     };
-  }, [src]);
+  }, [src,currentResolution,playbackSpeed,volume]);
 
   // Handle resolution changes
   useEffect(() => {
