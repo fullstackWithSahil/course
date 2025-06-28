@@ -15,7 +15,7 @@ import sendDiscordMessage from "@/lib/discord";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import { Dialog } from "@radix-ui/react-dialog";
-import { Home, Magnet, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
+import { CodeIcon, Home, Magnet, MessageCircle, Phone, Quote, Search, Settings, User2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -45,6 +45,11 @@ const tabs = [
     label:"Leads",
     icon:<Magnet/>,
     href:"/leads"
+  },
+  {
+    label:"Apis",
+    icon:<CodeIcon/>,
+    href:"/apis"
   }
 ];
 
