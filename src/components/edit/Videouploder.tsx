@@ -35,7 +35,7 @@ export default function Videouploder({
 		console.log("Video URL:", videoUrl);
 	
 		playerRef.current = videojs(videoRef.current, {
-		  controls: false,
+		  controls: true,
 		  autoplay: false,
 		  preload: 'metadata',
 		  responsive: true,

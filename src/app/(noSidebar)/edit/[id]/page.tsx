@@ -1,4 +1,3 @@
-"use client"
 import VideoStorageProvider from "./VideoStorage";
 import Main from "./Main";
 import ContextWrapper from "./Context";

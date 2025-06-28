@@ -11,7 +11,7 @@ import { useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
 import { useVideoStorage } from "./VideoStorage";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 type Video = {
     id: string;
@@ -32,6 +32,7 @@ export default function AddModule() {
     const [module,setModule] = useState("");
     const [uploadProgress, setUploadProgress] = useState(0);
     const {id:courseId} = useParams();
+    const router = useRouter();
 
     function addModule() {
         if (!module) {
@@ -56,9 +57,9 @@ export default function AddModule() {
         state.forEach((mod)=>{
             mod.videos.forEach((vid)=>{
                 if(vid.existing){
-                    existingVideos.push({...vid,module})
+                    existingVideos.push({...vid,module:mod.name})
                 }else{
-                    newVideos.push({...vid,module})
+                    newVideos.push({...vid,module:mod.name})
                 }
             })
         })
@@ -70,8 +71,10 @@ export default function AddModule() {
                     title:vid.title,
                     description:vid.description,
                     lesson:vid.lesson,
-                    module:vid.module
-                }).then(({error})=>{
+                    module:vid.module,
+                })
+                .eq("id",Number(vid.id))
+                .then(({error})=>{
                     if(error){
                         reject(error)
                     }else{
@@ -87,6 +90,7 @@ export default function AddModule() {
         })
         
         //create entries for new videos
+        const host = "https://buisnesstools-course.b-cdn.net";
         newVideos.map((vid)=>{
             return new Promise((resolve,reject)=>{
                 supabase.from("videos").insert({
@@ -95,8 +99,9 @@ export default function AddModule() {
                     module:vid.module,
                     lesson:vid.lesson,
                     thumbnail:vid.thumbnail,
-                    url:vid.url,
+                    url:`${host}/${vid.id}`,
                     course:Number(courseId),
+                    teacher:session?.user.id,
                 }).then(({error})=>{
                     if(error){
                         reject(error)
@@ -121,14 +126,16 @@ export default function AddModule() {
             const videoData = new FormData();
             videoData.append("video",video.videoFile);
             videoData.append("key", video.key);
-            axios.post("http://localhost:8080/api/transcode", videoData).catch((error)=>{
+            axios.post("http://localhost:8080/api/transcode", videoData).then(()=>{
+                uploadedCount++;
+                setUploadProgress(Math.floor((uploadedCount / totalVideos) * 100));
+            }).catch((error)=>{
                 toast("there was an error uploding the video");
                 console.log({error});
             })
         })
-        uploadedCount++;
-        setUploadProgress(Math.floor((uploadedCount / totalVideos) * 100));
         setLoading(false);
+        router.push("/home")
     }
 
     return (
