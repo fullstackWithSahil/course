@@ -35,7 +35,7 @@ export async function GET(request:NextRequest,{params}:{params:Promise<{id:strin
 	}
 }
 
-export async function PUT(request: NextRequest,{ params }:{ params: Promise<{ id: string }>}) {
+export async function PATCH(request: NextRequest,{ params }:{ params: Promise<{ id: string }>}) {
     try {
         //validate the api key, rate limits and check permissions
         const validation = await validateKeyAndLimit(request, "leads:write");
