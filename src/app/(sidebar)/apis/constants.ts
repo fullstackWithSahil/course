@@ -18,7 +18,7 @@ export const permissionOptions = [
 		label: "Manage Email Templates",
 		icon: Mail,
 	},
-	{ value: "students:read", label: "Read Students", icon: Users },
-	{ value: "students:write", label: "Add/Update Students", icon: Users },
-	{ value: "students:delete", label: "Delete Students", icon: Users },
+	{ value: "leads:read", label: "Read leads", icon: Users },
+	{ value: "leads:write", label: "Add/Update leads", icon: Users },
+	{ value: "leads:delete", label: "Delete leads", icon: Users },
 ];
