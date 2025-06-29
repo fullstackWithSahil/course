@@ -36,7 +36,7 @@ export default function Videocard({id,title,lesson}:VideoType) {
 			.contains("watchedVideos",id).then(({data})=>{
 				setViews(data?data.length:0)
 			})
-    },[id])
+    },[id,courseId,session])
 
 	return (
 		<Accordion type="single" collapsible key={id}>

@@ -9,6 +9,7 @@ export type Video = {
   url:string;
   thumbnail:string;
   lesson: number;
+  existing:boolean;
 };
 
 export type Module = {

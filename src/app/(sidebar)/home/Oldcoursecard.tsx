@@ -66,9 +66,8 @@ export default function CourseCard(course:propTypes){
     
     const handleDelete = async () => {
         try {
-            await sendDiscordMessage(`a request has been made to delete course ${course.id}`)            
-            console.log('Successfully deleted course:', course.id);
-            toast("Course deleted successfully");
+            await sendDiscordMessage(`a request has been made to delete course ${course.id}`)
+            toast("Course will be deleted shortly");
             setDeleteDialogOpen(false);
         } catch (error) {
             console.error("Unexpected error in handleDelete:", error);

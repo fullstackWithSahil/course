@@ -1,6 +1,6 @@
 "use client";
 
-import AddLesson from "@/components/course/AddLesson";
+import AddLesson from "@/components/edit/Addlesson";
 import { useCourseContext } from "./Context";
 
 export default function Editor() {
@@ -18,6 +18,7 @@ export default function Editor() {
 						moduleId={module.id}
 						update={false}
 						useCourseContext={useCourseContext}
+						exisiting={false}
 					/>
 					{module.videos.map((video)=><AddLesson
 						useCourseContext={useCourseContext}
@@ -27,6 +28,7 @@ export default function Editor() {
 						moduleId={module.id}
 						video={video}
 						update={true}
+						exisiting={video.existing}
 					/>)}
 				</div>
 			))}

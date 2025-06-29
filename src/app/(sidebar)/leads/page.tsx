@@ -13,9 +13,7 @@ export default async function Page() {
 		.select(`*`)
 		.eq("teacher", user.id);
 
-	if(!data) return;
-
-	const formated = data.map((lead) => {
+	const formated = data?.map((lead) => {
 		let date = new Date(lead.created_at);
 		const day = date.getDate().toString().padStart(2, '0');
 		const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -34,7 +32,7 @@ export default async function Page() {
 	
 	return (
 		<div className="w-full py-10 pr-2">
-			<DataTable columns={columns as any} data={formated}/>
+			<DataTable columns={columns as any} data={formated?formated:[]}/>
 		</div>
 	);
 }
