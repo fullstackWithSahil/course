@@ -18,7 +18,7 @@ export default function Editor() {
 						moduleId={module.id}
 						update={false}
 						useCourseContext={useCourseContext}
-						/>
+					/>
 					{module.videos.map((video)=><AddLesson
 						useCourseContext={useCourseContext}
 						key={video.id}

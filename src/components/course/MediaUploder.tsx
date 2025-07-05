@@ -2,7 +2,7 @@ import React, { useState, useCallback, ChangeEvent, Dispatch, SetStateAction, us
 import { Upload, X, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-interface MediaUploaderProps {
+export interface MediaUploaderProps {
     type: 'video' | 'image'
     file: File | null
     setFile: (file: File | null) => void
