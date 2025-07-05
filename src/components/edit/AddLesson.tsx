@@ -102,7 +102,8 @@ export default function AddLesson({
 				description,
 				url: videoPreview,
 				thumbnail: `${host}/${key}.webp`,
-				lesson
+				lesson,
+				existing:false,
 			};
 			
 			dispatch({type: "ADD_VIDEO", payload: {moduleId, video}});

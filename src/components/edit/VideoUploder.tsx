@@ -118,9 +118,6 @@ export default function VideoUploder({
                         data-setup="{}"
                     />
                 </div>
-                {/* <p className="text-sm text-gray-600 mt-2">
-                    Debug: existing={existing ? 'true' : 'false'}
-                </p> */}
             </div>
         )
     }
