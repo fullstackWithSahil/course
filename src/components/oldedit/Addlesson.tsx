@@ -12,12 +12,10 @@ import { useAuth } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
-import { Action, State, Video } from "@/app/(noSidebar)/edit/[id]/Context";
-import { useVideoStorage, videoActions } from "@/app/(noSidebar)/edit/[id]/VideoStorage";
-import DeleteButton from "./DeleteButton";
-import Videouploder from "./Videouploder";
+import { Action, State, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
+import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
 
-type useCourseContextType = ()=>{state:State,dispatch:Dispatch<Action>}
+type useCourseContextType = () => { state: State; dispatch: Dispatch<Action>; }
 
 export default function AddLesson({
 	modulename,
@@ -26,7 +24,6 @@ export default function AddLesson({
 	video,
 	update,
 	useCourseContext,
-	exisiting=false,
 }:{
 	modulename:string;
 	moduleLength:number;
@@ -34,7 +31,6 @@ export default function AddLesson({
 	update:boolean;
 	video?:Video;
 	useCourseContext:useCourseContextType;
-	exisiting?:boolean;
 }) {
     const { dispatch } = useCourseContext();
 	const {dispatch:VideoStorageDiapatch} = useVideoStorage();
@@ -103,8 +99,7 @@ export default function AddLesson({
 				description,
 				url: videoPreview,
 				thumbnail: `${host}/${key}.webp`,
-				lesson,
-                existing:false
+				lesson
 			};
 			
 			dispatch({type: "ADD_VIDEO", payload: {moduleId, video}});
@@ -188,6 +183,12 @@ export default function AddLesson({
 		}
 	}
 
+	function handleDelete(){
+		dispatch({type:"DELETE_VIDEO",payload:{moduleId,videoId:video?.id||""}});
+		const payload = videoActions.removeVideo(video?.id||"");
+		VideoStorageDiapatch(payload);
+	}
+
 	function handleVideoUpload() {
 		if (!videoFile) return;
 		videoActions.addVideo({key, videoFile});
@@ -239,20 +240,21 @@ export default function AddLesson({
 					setPreviewUrl={setImagePreview}
 					resetKey={resetCounter}
 				/>
-				<Videouploder
-					exisiting={exisiting}
-					videoFile={videoFile}
-					setVideoFile={setVideoFile}
-					handleVideoUpload={handleVideoUpload}
-					videoPreview={videoPreview}
-					setVideoPreview={setVideoPreview}
-					resetCounter={resetCounter}
+				<MediaUploader
+					type="video"
+					file={videoFile}
+					setFile={setVideoFile}
+					onCancel={() => {}}
+					onUpload={handleVideoUpload}
+					previewUrl={videoPreview}
+					setPreviewUrl={setVideoPreview}
+					resetKey={resetCounter}
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
 				{!update?
 					<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:
-					<DeleteButton existing={exisiting} moduleId={moduleId} videoId={video?.id||""}/>
+					<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>
 				}
 			</CardFooter>
 		</Card>

@@ -1,13 +1,14 @@
-import VideoStorageProvider from "./VideoStorage";
+"use client";
+import ContextWrapper from "./context";
 import Main from "./Main";
-import ContextWrapper from "./Context";
+import VideoStorageProvider from "./VideoStorage";
 
-export default function Page() {
+export default function page() {
 	return (
-		<VideoStorageProvider>
-			<ContextWrapper>
-				<Main />
-			</ContextWrapper>
-		</VideoStorageProvider>
+        <VideoStorageProvider>
+            <ContextWrapper>
+                <Main/>
+            </ContextWrapper>
+        </VideoStorageProvider>
 	);
 }

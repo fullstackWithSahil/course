@@ -3,9 +3,9 @@
 import {
 	useVideoStorage,
 	videoActions,
-} from "@/app/(noSidebar)/edit/[id]/VideoStorage";
+} from "@/app/(noSidebar)/oldedit/[id]/VideoStorage";
 import { Button, buttonVariants } from "../ui/button";
-import { useCourseContext, Video } from "@/app/(noSidebar)/edit/[id]/Context";
+import { useCourseContext, Video } from "@/app/(noSidebar)/oldedit/[id]/Context";
 import {
 	AlertDialog,
 	AlertDialogAction,

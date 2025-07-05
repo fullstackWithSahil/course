@@ -1,10 +1,11 @@
 "use client";
 
-import AddLesson from "@/components/edit/Addlesson";
+import AddLesson from "@/components/oldedit/Addlesson";
 import { useCourseContext } from "./Context";
 
 export default function Editor() {
 	const { state } = useCourseContext();
+	console.log(state);
 	return (
         <div className="h-full overflow-y-scroll">
 			{state.map((module) => (
@@ -17,18 +18,18 @@ export default function Editor() {
 						modulename={module.name} 
 						moduleId={module.id}
 						update={false}
-						useCourseContext={useCourseContext}
-						exisiting={false}
+						useCourseContext={useCourseContext as any}
+						// exisiting={false}
 					/>
 					{module.videos.map((video)=><AddLesson
-						useCourseContext={useCourseContext}
+						useCourseContext={useCourseContext as any}
 						key={video.id}
 						moduleLength={module.videos.length}
 						modulename={module.name}
 						moduleId={module.id}
 						video={video}
 						update={true}
-						exisiting={video.existing}
+						// exisiting={video.existing}
 					/>)}
 				</div>
 			))}
