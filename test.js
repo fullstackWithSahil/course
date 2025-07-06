@@ -1,31 +1,3 @@
-async function main(){
-    let delay = 100;
-    setInterval(async()=>{
-        let randomNumber = String(Math.floor(Math.random() * 1000));
-        const payload ={
-            to: "student@example.com",
-            subject: "Welcome to the course!hhh"+randomNumber,
-            template: "welcome",
-            variables: {
-                name: "John Doe",
-                course: "Web Development"
-            }
-        }
-
-        const response = await fetch("http://localhost:3000/api/v1/email/send", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer sk_live_9eiupjiq0qnwnh8x83799`
-            },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        console.log(data)
-    }, delay);
-}
-main().then(()=>{
-    console.log("Email sending started...");
-}).catch((err)=>{
-    console.error("Error in main function:", err);
-}); 
+const url = "https://buisnesstools-course.b-cdn.net/user_2zRgadsp1IOxkFPdwzeilUtIykt/155/start/8500354e-7ad5-4cbe-9f90-abffc705d659"
+const formated = url.replace("https://buisnesstools-course.b-cdn.net/","")
+console.log(formated)

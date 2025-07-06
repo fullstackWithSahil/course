@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Action, State, Video } from "@/app/(noSidebar)/newCourse/[id]/Context";
 import { useVideoStorage, videoActions } from "@/app/(noSidebar)/newCourse/[id]/VideoStorage";
 import VideoUploder from "./VideoUploder";
+import DeleteButton from "./DeleteButton";
 
 type useCourseContextType = () => { state: State; dispatch: Dispatch<Action>; }
 
@@ -187,12 +188,6 @@ export default function AddLesson({
 		}
 	}
 
-	function handleDelete(){
-		dispatch({type:"DELETE_VIDEO",payload:{moduleId,videoId:video?.id||""}});
-		const payload = videoActions.removeVideo(video?.id||"");
-		VideoStorageDiapatch(payload);
-	}
-
 	function handleVideoUpload() {
 		if (!videoFile) return;
 		videoActions.addVideo({key, videoFile});
@@ -252,13 +247,14 @@ export default function AddLesson({
 					setVideoPreview={setVideoPreview}
 					resetCounter={resetCounter}
 					existing={existing}
+					videoUrl={`${video?.url}/1080/index.m3u8`||""}
 				/>
 			</CardContent>
 			<CardFooter className="flex justify-end">
 				{!update?
 					<Button disabled={uploading} onClick={addVideo}>Add Lesson</Button>:
-					<Button  variant={"destructive"} onClick={handleDelete}>Delete</Button>
-				}
+					<DeleteButton url={video?.url||""} moduleId={moduleId} videoId={video?.id||""} existing={existing}/>
+				} 
 			</CardFooter>
 		</Card>
 	);

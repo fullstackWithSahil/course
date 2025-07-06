@@ -3,8 +3,6 @@ import MediaUploader from "../course/MediaUploder";
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 
-const videoUrl = "https://buisnesstools-course.b-cdn.net/user_2zRgadsp1IOxkFPdwzeilUtIykt/155/start/7d1490ef-654b-4a7c-ad97-9325b1e071c9/1080/index.m3u8"
-
 export default function VideoUploder({ 
     existing=false,
     videoFile,
@@ -13,6 +11,7 @@ export default function VideoUploder({
     setVideoPreview,
     handleVideoUpload,
     resetCounter,
+    videoUrl
 }: { 
     existing?: boolean;
     videoFile:File|null;
@@ -21,6 +20,7 @@ export default function VideoUploder({
     setVideoPreview:Dispatch<SetStateAction<string>>;
     handleVideoUpload:()=>void;
     resetCounter:number;
+    videoUrl:string;
 }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const playerRef = useRef<any>(null);
