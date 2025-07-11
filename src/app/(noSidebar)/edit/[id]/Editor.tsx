@@ -1,7 +1,7 @@
 "use client";
 
 import AddLesson from "@/components/edit/AddLesson";
-import { useCourseContext } from "./context";
+import { useCourseContext } from "./Context";
 
 export default function Editor() {
     const { state } = useCourseContext();

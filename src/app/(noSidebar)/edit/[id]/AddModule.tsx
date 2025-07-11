@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useCourseContext } from "./context";
+import { useCourseContext } from "./Context";
 import { useVideoStorage } from "./VideoStorage";
 import supabaseClient from "@/lib/supabase";
 import { useSession, useUser } from "@clerk/nextjs";

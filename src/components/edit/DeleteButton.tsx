@@ -1,6 +1,6 @@
 "use client";
 
-import { useCourseContext } from "@/app/(noSidebar)/edit/[id]/context";
+import { useCourseContext } from "@/app/(noSidebar)/edit/[id]/Context";
 import { Button } from "../ui/button";
 import {
 	useVideoStorage,

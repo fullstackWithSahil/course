@@ -48,7 +48,7 @@ export default function Videocard({id,title,lesson}:VideoType) {
 					<div className="w-full">
 						<Video
 							src={
-								"https://buisnesstools-course.b-cdn.net/user_2xgDvRU2MqZcHt3qI2rVHtErdFK/139/start/15cd08b9-863d-4f2c-9065-cb2e4e0a6e1a"
+								"https://buisnesstools-course.b-cdn.net/user_2zRgadsp1IOxkFPdwzeilUtIykt/155/start/7d1490ef-654b-4a7c-ad97-9325b1e071c9"
 							}
 						/>
 					</div>

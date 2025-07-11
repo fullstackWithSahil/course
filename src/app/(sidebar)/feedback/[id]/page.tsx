@@ -36,7 +36,10 @@ export default async function page({
 							</AccordionTrigger>
 							<AccordionContent>
 								{block.videos.map((video,i) => (
-                                    <Videocard {...video} key={i}/>
+									// <div>
+										
+										<Videocard {...video} key={video.id}/>
+									// </div>
 								))}
 							</AccordionContent>
 						</AccordionItem>

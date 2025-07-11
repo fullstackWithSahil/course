@@ -1,5 +1,5 @@
 "use client";
-import ContextWrapper from "./context";
+import ContextWrapper from "./Context";
 import Main from "./Main";
 import VideoStorageProvider from "./VideoStorage";
 

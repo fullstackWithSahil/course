@@ -1,4 +1,18 @@
-import { Module, Video as VideoType } from "@/app/(noSidebar)/edit/[id]/context"
+type Video = {
+  id: string;
+  title: string;
+  description: string;
+  url:string;
+  thumbnail:string;
+  lesson: number;
+  existing:boolean;
+};
+
+type Module = {
+  id: string;
+  name: string;
+  videos: Video[];
+};
 
 type DataType = {
     course: number | null;
@@ -29,7 +43,7 @@ export default function formatter(data:DataType) {
                     acc.push(block);
                 }
 
-                const video: VideoType = {
+                const video: Video = {
                     id: item.id.toString(),
                     title: item.title ?? "Untitled",
                     description: item.description ?? "",

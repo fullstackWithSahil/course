@@ -1,6 +1,6 @@
 "use client";
 import Structure from "@/components/course/Structure";
-import { useCourseContext } from "./context";
+import { useCourseContext } from "./Context";
 import AddModule from "./AddModule";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
