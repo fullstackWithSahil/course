@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import Videoplayer from "./Video";
-import VideoEngagementDashboard from "./VideoEngagementDashboard ";
+import VideoEngagementDashboard from "./VideoEngagementDashboard";
 import { useEffect, useState } from "react";
 import { useSession } from "@clerk/nextjs";
 import supabaseClient from "@/lib/supabase";
