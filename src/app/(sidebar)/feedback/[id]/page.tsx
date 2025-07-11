@@ -1,31 +1,33 @@
+"use client";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { supabaseClient } from "@/lib/server/supabase";
-import { formatting } from "./formatter";
+import { useSession } from "@clerk/nextjs";
+import supabaseClient from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { formatting,Module } from "./formatter";
 import Videocard from "./Videocard";
 
-export default async function page({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const supabase = supabaseClient();
-	const { id } = await params;
-	const { data } = await supabase
-		.from("videos")
-		.select("*")
-		.eq("course", Number(id));
-
-	//formatting the videos
-	const blocks = formatting(data)
-	return (
-		<div>
+export default function page() {
+    const {session} = useSession();
+    const {id} = useParams();
+    const [blocks, setBlocks] = useState<Module[]>([]);
+    useEffect(()=>{
+        const supabase = supabaseClient(session);
+        supabase.from("videos").select("*").eq("course",Number(id)).then(({data}) => {
+            const bloc = formatting(data);
+            console.log({data, bloc});
+            setBlocks(bloc);
+        })
+    },[session])
+    return (
+        <div>
             <h1 className="text-center text-5xl font-bold">Modules</h1>
-			<div className="w-full">
+			<div className="w-full mb-32">
 				<Accordion type="multiple">
 					{blocks.map((block, i) => (
                         <AccordionItem key={block.id} value={`item-${i}`}>
@@ -36,10 +38,16 @@ export default async function page({
 							</AccordionTrigger>
 							<AccordionContent>
 								{block.videos.map((video,i) => (
-									// <div>
-										
-										<Videocard {...video} key={video.id}/>
-									// </div>
+									<Videocard 
+                                        key={video.id}
+                                        id={Number(video.id)}
+                                        thumbnail={video.thumbnail}
+                                        title={video.title}
+                                        description={video.description}
+                                        url={video.url}
+                                        createdAt={video.createdAt}
+                                        lesson={video.lesson}
+                                    />
 								))}
 							</AccordionContent>
 						</AccordionItem>
@@ -47,5 +55,5 @@ export default async function page({
 				</Accordion>
 			</div>
 		</div>
-	);
+    )
 }

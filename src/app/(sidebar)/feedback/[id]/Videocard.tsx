@@ -1,85 +1,76 @@
 "use client";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { VideoType } from "./formatter";
-import Video from "@/components/Videoplayer";
-import { useEffect, useState } from "react";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import supabaseClient from "@/lib/supabase";
 import { useSession } from "@clerk/nextjs";
-import { toast } from "sonner";
-import { CommentBlock, CommentType } from "./CommentBlock";
+import { Eye, MessageCircle } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function Videocard({id,title,lesson}:VideoType) {
+type propType = {
+	id: number;
+	title: string;
+	description: string;
+	url: string;
+	thumbnail: string;
+	createdAt: string;
+	lesson: number;
+};
 
-	const {session} = useSession();
-	const [comments,setComments] = useState<CommentType[]>([]);
-	const [views,setViews] = useState(0);
-	const {id:courseId} = useParams();
-
-	useEffect(()=>{
+export default function Videocard(props: propType) {
+    const {session} = useSession();
+    const {id} = useParams();
+    const [views,setViews] = useState(0);
+    const [comments,setComments] = useState(0);
+    useEffect(()=>{
         const supabase = supabaseClient(session);
-        supabase
-            .from("comments")
-            .select("*")
-            .eq("video",Number(id))
-            .then(({data,error})=>{
-                if(error){
-                    toast.error("Error fetching comments")
-                }else{
-                    setComments(data as CommentType[]);
-                }
-            });
-		supabase
-			.from("students")
-			.select("*")
-			.eq("course",Number(courseId))
-			.contains("watchedVideos",id).then(({data})=>{
-				setViews(data?data.length:0)
-			})
-    },[id,courseId,session])
-
+        supabase.from("comments").select("*").eq("video",props.id).then(({data}) => {
+            setComments(data?.length || 0);
+        })
+        supabase.from("students").select("*").contains("watchedVideos",[props.id]).then(({data}) => {
+            setViews(data?.length || 0);
+            console.log({views:data})
+        })
+    },[])
 	return (
-		<Accordion type="single" collapsible key={id}>
-			<AccordionItem value="item-1">
-				<AccordionTrigger>
-					{lesson}-{title}
-				</AccordionTrigger>
-				<AccordionContent>
-					<div className="w-full">
-						<Video
-							src={
-								"https://buisnesstools-course.b-cdn.net/user_2zRgadsp1IOxkFPdwzeilUtIykt/155/start/7d1490ef-654b-4a7c-ad97-9325b1e071c9"
-							}
-						/>
+		<Card className="m-4 p-4 shadow-md rounded-xl">
+			<CardTitle className="mb-2 text-lg md:text-xl font-semibold text-gray-800">
+				Lesson {props.lesson} — {props.title}
+			</CardTitle>
+
+			<CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+				<img
+					src={props.thumbnail}
+					alt={props.title}
+					className="w-full h-48 md:h-56 object-cover rounded-lg"
+				/>
+
+				<div className="flex flex-col justify-between h-full">
+					<p className="text-sm text-gray-600 mb-4">
+						{props.description}
+					</p>
+
+					<div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+						<div>
+							<span className="mr-4 flex items-center gap-2">
+                                <Eye/> {views} views
+                            </span>
+							<span  className="flex items-center gap-2">
+                                <MessageCircle/> {comments} comments
+                            </span>
+						</div>
+						<span>{new Date(props.createdAt).toLocaleDateString()}</span>
 					</div>
 
-					<div className="flex items-center text-lg font-medium text-white my-3 mx-4">
-						<p className="px-5 bg-gray-800 opacity-50 border-2 rounded-xl">
-							{views} Views
-						</p>
-						<p className="px-5 bg-gray-800 opacity-50 border-2 rounded-xl">
-							{comments.length} Comments
-						</p>
-					</div>
-					<div className="mx-3 border-2 rounded-t-xl">
-						<div className="font-medium bg-gray-800 border-2 rounded-t-xl text-white w-full rounded-t-lx text-xl text-center py-2">
-                            Comments
-                        </div>
-						 
-						{comments.length>0?comments.map((comment)=><CommentBlock
-							key={comment.id}
-							comment={comment.comment}
-							commented_by={comment.commented_by}
-							created_at={comment.created_at}
-							id={comment.id}
-							likes={comment.likes}
-							profile={comment.profile}
-							video={comment.video}
-							liked_by={comment.liked_by}
-						/>):<p className="text-center text-2xl font-bold my-3">No comments yet</p>}
-					</div>
-				</AccordionContent>
-			</AccordionItem>
-		</Accordion>
+					<Link 
+                        href={`/feedback/${id}/${props.id}`} 
+                        className={buttonVariants()}
+                    >
+                        See More
+                    </Link>
+				</div>
+			</CardContent>
+		</Card>
 	);
 }

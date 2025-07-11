@@ -23,7 +23,7 @@ export type VideoType = {
 	lesson:number;
 };
 
-export type Module = {
+type Module = {
 	id: string;
 	name: string;
 	videos: VideoType[];
