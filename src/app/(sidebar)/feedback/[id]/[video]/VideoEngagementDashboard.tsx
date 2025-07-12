@@ -9,7 +9,7 @@ import {
 import Views,{ViewType} from "./Views";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Eye } from "lucide-react";
-import Comments, { CommentType } from "./Comments";
+import Comment, { CommentType } from "./Comment";
 import { useEffect, useState } from "react";
 import { useSession } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
@@ -18,7 +18,7 @@ import supabaseClient from "@/lib/supabase";
 
 const VideoEngagementDashboard = () => {
 	const [activeTab, setActiveTab] = useState("comments");
-	const [comments, setComments] = useState<CommentType>([]);
+	const [comments, setComments] = useState<CommentType[]>([]);
 	const [sortedViews, setSortedViews] = useState<ViewType>([]);
 	const { session } = useSession();
 	const { video } = useParams();
@@ -35,7 +35,18 @@ const VideoEngagementDashboard = () => {
 							new Date(b.created_at).getTime() -
 							new Date(a.created_at).getTime()
 					) || [];
-				setComments(sortedComments);
+				setComments(
+					sortedComments.map((c) => ({
+						comment: c.comment ?? "",
+						commented_by: c.commented_by ?? "",
+						created_at: c.created_at,
+						id: c.id,
+						likes: Array.isArray(c.liked_by) ? c.liked_by.length : 0,
+						profile: c.profile ?? "",
+						video: c.video ?? 0,
+						liked_by: c.liked_by ?? [],
+					}))
+				);
 				console.log({ data });
 			});
 		supabase
@@ -85,7 +96,7 @@ const VideoEngagementDashboard = () => {
 								Recent Views {sortedViews.length}
 							</TabsTrigger>
 						</TabsList>
-						<Comments comments={comments}/>
+						<Comment />
 						<Views sortedViews={sortedViews}/>
 					</Tabs>
 				</CardContent>

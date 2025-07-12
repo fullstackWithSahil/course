@@ -2,11 +2,11 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
-import { Clock, Eye, Mail, View } from "lucide-react";
+import { Clock, Eye } from "lucide-react";
 import { formatRelativeTime, getInitials } from "./VideoEngagementDashboard";
+import Messagebutton from "./Messagebutton";
 
 export type ViewType = {
 	course: number | null;
@@ -21,10 +21,6 @@ export type ViewType = {
 }[];
 
 export default function Views({sortedViews}:{sortedViews: ViewType}) {
-	function handleMessage(id: number, name: string, email: string): void {
-		throw new Error("Function not implemented.");
-	}
-
 	return (
 		<TabsContent value="views" className="space-y-4">
 			{sortedViews.length === 0 ? (
@@ -76,22 +72,7 @@ export default function Views({sortedViews}:{sortedViews: ViewType}) {
 									</div>
 								</div>
 							</div>
-							<div className="flex items-center gap-2">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() =>
-										handleMessage(
-											view.id,
-											view.name||"",
-											view.email||""
-										)
-									}
-								>
-									<Mail className="h-4 w-4 mr-2" />
-									Message
-								</Button>
-							</div>
+							<Messagebutton id={view.id} email={view.email||""} name={view.name||""}/>
 						</div>
 					</Card>
 				))

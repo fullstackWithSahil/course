@@ -4,7 +4,13 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
-const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
+const Video = ({
+  src,
+  disabled,
+}:{
+  src: string,
+  disabled:boolean,
+}) => {
   const resolutions = ["1080", "720", "360", "144"];
   const playbackSpeeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
   const [paused, setPaused] = useState(true);
@@ -15,21 +21,12 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [videoError, setVideoError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const playerRef = useRef<any | null>(null);
+  const playerRef = useRef<any | null>(null);// eslint-disable-line @typescript-eslint/no-explicit-any
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [showControls, setShowControls] = useState(true);
   const [lastTouchTime, setLastTouchTime] = useState(0);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-
-  // Debug logging
-  useEffect(() => {
-    console.log("Video component mounted with src:", src);
-    console.log("Current resolution:", currentResolution);
-    console.log("Full video URL:", `${src}/${currentResolution}/index.m3u8`);
-  }, [src, currentResolution]);
+  const [isFullScreen,setIsFullScreen] = useState(false)
 
   // Handle volume changes
   useEffect(() => {
@@ -53,21 +50,21 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
 
   const handleTouchEnd = useCallback(() => {
     const touchDuration = Date.now() - lastTouchTime;
-    if (touchDuration < 200) {
+    if (touchDuration < 200) { // Short tap
       playPause();
     }
-  }, [lastTouchTime,playPause]);
+  }, [lastTouchTime]);
 
   // Auto-hide controls
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (showControls && !paused) {
+    if (showControls) {
       timer = setTimeout(() => {
         setShowControls(false);
       }, 3000);
     }
     return () => clearTimeout(timer);
-  }, [showControls, paused]);
+  }, [showControls]);
 
   // Full-screen handling
   const toggleFullScreen = async () => {
@@ -100,9 +97,9 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
 
   const inputEvents = useCallback(
     (e: KeyboardEvent) => {
-      if (disabled) {
+      if(disabled){
         return;
-      } else {
+      }else{
         if (e.key === " ") {
           e.preventDefault();
           playPause();
@@ -113,9 +110,9 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
         } else if (e.key === "f") {
           toggleFullScreen();
         }
-      }
+      };
     },
-    [skip,paused, disabled,playPause]
+    [paused]
   );
 
   useEffect(() => {
@@ -129,82 +126,37 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
   useEffect(() => {
     if (!videoRef.current) return;
 
-    console.log("Initializing Video.js player...");
-    
-    const videoUrl = `${src}/${currentResolution}/index.m3u8`;
-    console.log("Video URL:", videoUrl);
-
     playerRef.current = videojs(videoRef.current, {
       controls: false,
       autoplay: false,
-      preload: 'metadata',
       responsive: true,
       fluid: true,
-      html5: {
-        vhs: {
-          overrideNative: true
-        }
-      },
       sources: [
         {
-          src: videoUrl,
+          src: `${src}/${currentResolution}/index.m3u8`,
           type: "application/x-mpegURL",
         },
       ],
-    });
-
-    playerRef.current.ready(() => {
-      console.log("Player is ready");
-      setIsLoading(false);
-    });
-
-    playerRef.current.on("loadstart", () => {
-      console.log("Video load started");
-      setIsLoading(true);
-      setVideoError(null);
-    });
-
-    playerRef.current.on("loadedmetadata", () => {
-      console.log("Video metadata loaded");
-      setDuration(playerRef.current.duration());
-      playerRef.current.volume(volume);
-      playerRef.current.playbackRate(playbackSpeed);
-      setIsLoading(false);
     });
 
     playerRef.current.on("timeupdate", () => {
       setCurrentTime(playerRef.current.currentTime());
     });
 
-    playerRef.current.on("error", (e: any) => {
-      console.error("Video.js error:", e);
-      const error = playerRef.current.error();
-      if (error) {
-        console.error("Error details:", error);
-        setVideoError(`Video Error: ${error.message || 'Unknown error'}`);
-      }
-      setIsLoading(false);
-    });
-
-    playerRef.current.on("play", () => {
-      console.log("Video started playing");
-      setPaused(false);
-    });
-
-    playerRef.current.on("pause", () => {
-      console.log("Video paused");
-      setPaused(true);
+    playerRef.current.on("loadedmetadata", () => {
+      setDuration(playerRef.current.duration());
+      // Set initial volume and playback speed when metadata is loaded
+      playerRef.current.volume(volume);
+      playerRef.current.playbackRate(playbackSpeed);
     });
 
     return () => {
       if (playerRef.current) {
-        console.log("Disposing Video.js player");
         playerRef.current.dispose();
       }
     };
-  }, [src,currentResolution,playbackSpeed,volume]);
+  }, []);
 
-  // Handle resolution changes
   useEffect(() => {
     if (!playerRef.current) return;
     
@@ -213,11 +165,8 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
     const currentVolume = playerRef.current.volume();
     const currentSpeed = playerRef.current.playbackRate();
     
-    const newUrl = `${src}/${currentResolution}/index.m3u8`;
-    console.log("Changing resolution to:", currentResolution, "URL:", newUrl);
-    
     playerRef.current.src({
-      src: newUrl,
+      src: `${src}/${currentResolution}/index.m3u8`,
       type: "application/x-mpegURL",
     });
   
@@ -231,33 +180,53 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
     });
   }, [currentResolution, src]);
 
+  useEffect(() => {
+    const handleOrientation = () => {
+      if (isFullScreen) {
+        try {
+          if (window.screen.orientation) {
+            (window.screen.orientation as any).lock("landscape");// eslint-disable-line @typescript-eslint/no-explicit-any
+          }
+        } catch (err) {
+          console.error("Failed to lock orientation:", err);
+        }
+      }
+    };
+
+    handleOrientation();
+    window.addEventListener("orientationchange", handleOrientation);
+    return () => {
+      window.removeEventListener("orientationchange", handleOrientation);
+      if (window.screen.orientation) {
+        window.screen.orientation.unlock();
+      }
+    };
+  }, [isFullScreen]);
+
+  
   function playPause() {
-    if (!playerRef.current) return;
-    
+    setPaused((prev) => !prev);
     if (paused) {
-      playerRef.current.play().catch((e: any) => {
-        console.error("Play failed:", e);
-        setVideoError("Failed to play video");
-      });
+      playerRef.current?.play();
     } else {
-      playerRef.current.pause();
+      playerRef.current?.pause();
     }
   }
 
   function changeResolution(res: string) {
     if (!playerRef.current) return;
     
+    // Store current time and playing state
     const currentTime = playerRef.current.currentTime();
     const wasPlaying = !playerRef.current.paused();
     
-    const newUrl = `${src}/${res}/index.m3u8`;
-    console.log("Changing to resolution:", res, "URL:", newUrl);
-    
+    // Update source with new resolution
     playerRef.current.src({
-      src: newUrl,
+      src: `${src}/${res}/index.m3u8`, // Fixed: use 'res' instead of 'currentResolution'
       type: "application/x-mpegURL",
     });
     
+    // When video is ready, restore time and playing state
     playerRef.current.one('loadedmetadata', () => {
       playerRef.current.currentTime(currentTime);
       playerRef.current.volume(isMuted ? 0 : volume);
@@ -314,52 +283,26 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
     }
   }
 
-  // Show error state
-  if (videoError) {
-    return (
-      <div className="relative mx-auto lg:w-full lg:max-w-[1000px] lg:aspect-video bg-black flex items-center justify-center">
-        <div className="text-white text-center p-4">
-          <p className="text-xl mb-2">⚠️ Video Error</p>
-          <p className="text-sm">{videoError}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded"
-          >
-            Reload Page
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       ref={containerRef}
       data-vjs-player
-      className={`relative mx-auto bg-black ${
+      className={`relative mx-auto ${
         isFullScreen
           ? "lg:w-screen lg:h-screen"
           : "lg:w-full lg:max-w-[1000px] lg:aspect-video"
-      }`}
+      }
+      `}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onMouseMove={() => setShowControls(true)}
     >
-      <div className="group h-full relative">
-        {/* Loading indicator */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75 z-10">
-            <div className="text-white text-xl">Loading video...</div>
-          </div>
-        )}
-
+      <div className="group h-full">
         <video
           ref={videoRef}
-          className="video-js vjs-big-play-centered w-full h-full"
+          className={`video-js vjs-big-play-centered w-full h-full absolute`}
           controls={false}
-          data-setup='{"fluid": true}'
         />
-        
         <div
           className={`absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 transition-opacity duration-300 ${
             showControls ? "opacity-100" : "opacity-0"
@@ -380,24 +323,30 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
           {/* Controls */}
           <div className="flex flex-wrap items-center justify-between px-4 py-2 gap-2">
             <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-[200px]">
-              <button onClick={playPause} className="mr-2 text-white">
+              <button onClick={playPause} className="mr-2">
                 {paused ? (
                   <svg className="h-6 w-6" viewBox="0 0 24 24">
-                    <path fill="white" d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                    <path
+                      fill="white"
+                      d="M8,5.14V19.14L19,12.14L8,5.14Z"
+                    />
                   </svg>
                 ) : (
                   <svg className="h-6 w-6" viewBox="0 0 24 24">
-                    <path fill="white" d="M14,19H18V5H14M6,19H10V5H6V19Z" />
+                    <path
+                      fill="white"
+                      d="M14,19H18V5H14M6,19H10V5H6V19Z"
+                    />
                   </svg>
                 )}
               </button>
 
               <div className="hidden sm:flex items-center space-x-2">
                 <button onClick={() => skip(-10)}>
-                  <Rewind className="h-6 w-6 text-white" />
+                  <Rewind className="h-6 w-6 fill-accent dark:fill-white" />
                 </button>
                 <button onClick={() => skip(10)}>
-                  <FastForward className="h-6 w-6 text-white" />
+                  <FastForward className="h-6 w-6 fill-accent dark:fill-white" />
                 </button>
               </div>
 
@@ -408,9 +357,9 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
               <div className="hidden sm:flex items-center space-x-2">
                 <button onClick={toggleMute}>
                   {isMuted || volume === 0 ? (
-                    <VolumeX className="h-6 w-6 text-white" />
+                    <VolumeX className="h-6 w-6 fill-white text-white" />
                   ) : (
-                    <Volume2 className="h-6 w-6 text-white" />
+                    <Volume2 className="h-6 w-6 fill-white text-white" />
                   )}
                 </button>
                 <input
@@ -429,10 +378,10 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
               <select
                 value={playbackSpeed}
                 onChange={handlePlaybackSpeedChange}
-                className="bg-transparent border-none outline-none cursor-pointer text-sm text-white"
+                className="cursor-pointer text-sm text-white bg-black px-5"
               >
                 {playbackSpeeds.map((speed) => (
-                  <option key={speed} value={speed} className="text-black bg-gray-800">
+                  <option key={speed} value={speed} className="">
                     {speed}x
                   </option>
                 ))}
@@ -440,7 +389,7 @@ const Video = ({src, disabled = false}:{src: string, disabled?: boolean}) => {
 
               <div className="relative">
                 <button onClick={() => setShowSettings((prev) => !prev)}>
-                  <Settings className="h-6 w-6 text-white" />
+                  <Settings className="h-6 w-6 dark:fill-accent fill-white" />
                 </button>
                 {showSettings && (
                   <div className="absolute bottom-full right-0 mb-2 bg-black border border-gray-700 rounded-md p-2">
