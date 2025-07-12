@@ -29,7 +29,8 @@ export function CommentBlock(props: CommentBlockProps) {
         reply,
         replies = [],
         replyCount = 0,
-        onReplyAdded 
+        onReplyAdded ,
+        sender
     } = props;
     
     const { user } = useUser();
@@ -79,7 +80,8 @@ export function CommentBlock(props: CommentBlockProps) {
                         video: video,
                         commented_by: user?.firstName,
                         liked_by: [],
-                        reply: id, // This reply belongs to the current comment
+                        reply: id, // This reply belongs to the current comment,
+                        sender: user?.id // Store sender's ID
                     })
                     .select()
                     .single();
@@ -120,7 +122,7 @@ export function CommentBlock(props: CommentBlockProps) {
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Messagebutton id={id} email={""} name={commented_by}/>
+                    <Messagebutton id={id} senderId={sender||""}/>
                     {/* Reply button and count */}
                     <div className="flex items-center gap-1">
                         <MessageCircle

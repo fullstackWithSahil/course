@@ -17,6 +17,7 @@ export type CommentType = {
     likes: number;
     profile: string;
     video: number;
+    sender?: string; // Optional field for sender's ID
     liked_by: string[];
     reply?: number | null; // null for top-level comments, comment ID for replies
 }
@@ -56,6 +57,7 @@ export default function Comments() {
                     commented_by: user?.firstName,
                     liked_by: [],
                     reply: null, // Top-level comment
+                    sender: user?.id // Store sender's ID
                 })
                 .select()
                 .single();
@@ -115,6 +117,7 @@ export default function Comments() {
                             reply={comment.reply}
                             replies={getReplies(comment.id)}
                             replyCount={getReplyCount(comment.id)}
+                            sender={comment.sender}
                             onReplyAdded={(newReply) => setComments(prev => [newReply, ...prev])}
                         />
                     )) : 

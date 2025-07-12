@@ -72,7 +72,7 @@ export default function Views({sortedViews}:{sortedViews: ViewType}) {
 									</div>
 								</div>
 							</div>
-							<Messagebutton id={view.id} email={view.email||""} name={view.name||""}/>
+							<Messagebutton senderId={view.student||""}/>
 						</div>
 					</Card>
 				))

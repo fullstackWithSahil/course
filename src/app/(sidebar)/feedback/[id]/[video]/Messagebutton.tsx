@@ -14,19 +14,47 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { useSession, useUser } from "@clerk/nextjs";
+import axios from "axios";
+import { toast } from "sonner";
+import supabaseClient from "@/lib/supabase";
 
 export default function Messagebutton({
 	id,
-	name,
-	email,
+	senderId,
 }: {
-	id: number;
-	name: string;
-	email: string;
+	id?: number;
+	senderId: string;
 }) {
+	const { user } = useUser();
+	const {session} = useSession();
     const [message, setMessage] = useState("");
-	function handleMessage() {
-		throw new Error("Function not implemented.");
+	async function handleMessage(){
+		try {
+			const supabase = supabaseClient(session);
+			const { data:comment } =id? await supabase
+				.from("comments")
+				.select("comment")
+				.eq("id", id!)
+				.single(): { data: null };
+
+			const content=id?`replying to your comment "${comment?.comment}".\n\n${message}`:message;
+			const {data} = await axios.get(`http://localhost:8080/api/chats/member/${senderId}`);
+			const chatId = data.data.find((c:any)=>!c.group)._id;
+			
+			await axios.post("http://localhost:8080/api/messages/create",{ 
+				chat: chatId, 
+				sender:user?.id || "", 
+				content,
+				profile: user?.imageUrl || "",
+				firstname: user?.firstName || "",
+			})
+			toast("Message sent successfully!");
+			setMessage("");
+		} catch (error) {
+			console.error("Error sending message:", error);
+			toast.error("Failed to send message.");	
+		}
 	}
 
 	return (
@@ -42,7 +70,7 @@ export default function Messagebutton({
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>
-						Send a message to {name || "User"}
+						Send a message 
 					</AlertDialogTitle>
 					<AlertDialogDescription>
 						<Textarea value={message} onChange={(e)=>setMessage(e.target.value)}/>
