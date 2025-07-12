@@ -1,21 +1,21 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { supabaseClient } from "@/lib/server/supabase";
-import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
+import React from "react";
 
-export default async function MobileSidebar() {
-	const user = await currentUser();
-	if (!user) {
-		return <div>You are not logged in</div>;
-	}
-	const supabase = supabaseClient();
-	const { data: courses } = await supabase
-		.from("courses")
-		.select("*")
-		.order("created_at", { ascending: false })
-		.eq("teacher", user.id);
-		
+type courseType =
+	| {
+			created_at: string;
+			description: string | null;
+			_id: string;
+			name: string | null;
+			price: number | null;
+			teacher: string | null;
+			thumbnail: string | null;
+	  }[]
+	| null;
+
+export default function MobileSidebar({ courses }: { courses: courseType }) {
 	return (
 		<Sheet>
 			<SheetTrigger>
@@ -24,13 +24,19 @@ export default async function MobileSidebar() {
 			<SheetContent>
 				{courses?.map((course) => (
 					<Link
-						href={`/chats/${course.id}`}
-						key={course.id}
+						href={`/chats/${course._id}`}
+						key={course._id}
 						className={buttonVariants() + " w-3/4"}
 					>
 						{course.name}
 					</Link>
 				))}
+				<Link
+					href={"/chats/teacher"}
+					className={buttonVariants() + " w-3/4"}
+				>
+					Teacher
+				</Link>
 			</SheetContent>
 		</Sheet>
 	);

@@ -5,10 +5,13 @@ import Pricing from '@/components/landingPage/Pricing';
 import Faq from '@/components/landingPage/Faq';
 import Testmonials from '@/components/landingPage/Testmonials';
 import Cta from '@/components/landingPage/Cta';
+import Footer from "@/components/landingPage/Footer";
+
 
 
 const Website = () => {
   return (
+    <>
     <main>
       <Hero/>
       <section className="bg-primary text-white p-8">
@@ -37,7 +40,9 @@ const Website = () => {
       <Faq/>
       <Cta/>
     </main>
-  );
+    <Footer/>
+    </>
+  )
 };
 
 export default Website;
