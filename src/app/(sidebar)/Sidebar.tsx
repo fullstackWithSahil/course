@@ -49,7 +49,7 @@ const tabs = [
   {
     label:"Templetes",
     icon:<Mail/>,
-    href:"/templete"
+    href:"/template"
   },
   {
     label:"Apis",

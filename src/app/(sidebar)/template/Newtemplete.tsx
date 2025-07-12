@@ -42,7 +42,7 @@ export default function Newtemplete() {
 				throw error;
 			}
 			toast.success("Template created successfully!");
-			router.push(`/templates/${data[0].id}`);
+			router.push(`/template/${data[0].id}`);
 		} catch (error) {
 			console.error("Error creating template:", error);
 			toast.error("Failed to create template. Please try again.");

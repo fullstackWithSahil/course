@@ -33,7 +33,7 @@ export default async function Oldtempletes() {
         'use server'
         const supabase = supabaseClient();
         await supabase.from('templetes').delete().eq('id', id);
-        redirect('/templates'); // Redirect to refresh the page
+        redirect('/template'); // Redirect to refresh the page
     }
 
     if (!templates || templates.length === 0) {
@@ -96,7 +96,7 @@ export default async function Oldtempletes() {
                         
                         <CardFooter className="flex gap-2">
                             <Button asChild variant="outline" size="sm" className="flex-1">
-                                <Link href={`/edit/${template.id}`}>
+                                <Link href={`template/${template.id}`}>
                                     <Edit className="mr-2 h-4 w-4" />
                                     Edit
                                 </Link>
