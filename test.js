@@ -1,3 +1,15 @@
-const url = "https://buisnesstools-course.b-cdn.net/user_2zRgadsp1IOxkFPdwzeilUtIykt/155/start/8500354e-7ad5-4cbe-9f90-abffc705d659"
-const formated = url.replace("https://buisnesstools-course.b-cdn.net/","")
-console.log(formated)
+import { z } from "zod";
+
+
+const data = schemaValidation({
+  to:["sahil@gmail.com","tanay@gmail.com"],
+  from:"sahil@gmail.com",
+  subject:"test",
+//   template:"sahil",
+  variables:{
+    name:"sahil",
+    age:19
+  }
+})
+
+console.log(data)

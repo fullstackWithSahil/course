@@ -19,6 +19,7 @@ export default async function validateKeyAndLimit(
 		return new NextResponse(
 			JSON.stringify({
 				error: "API key is missing or invalid",
+				success:false
 			}),
 			{ status: 401 }
 		);
@@ -35,6 +36,7 @@ export default async function validateKeyAndLimit(
 		return new NextResponse(
 			JSON.stringify({
 				error: "Invalid API key",
+				success:false
 			}),
 			{ status: 401 }
 		);
@@ -45,6 +47,7 @@ export default async function validateKeyAndLimit(
 		return new NextResponse(
 			JSON.stringify({
 				error: "API key does not have permission to send emails",
+				success:false
 			}),
 			{ status: 403 }
 		);
@@ -61,6 +64,7 @@ export default async function validateKeyAndLimit(
 		return new NextResponse(
 			JSON.stringify({
 				error: "Rate limit exceeded. Please try again later.",
+				success: false,
 			}),
 			{ status: 429 }
 		);

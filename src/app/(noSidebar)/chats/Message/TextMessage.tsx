@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@clerk/nextjs";
-import { Edit, MoreVertical, Trash2, Check, X } from "lucide-react";
+import { Edit, MoreVertical, Trash2, Check, X, Ban } from "lucide-react";
 import { useState, useRef, useEffect, useContext } from "react";
 import { MessageType } from "../[id]/Messageprovider";
 import { calculateDate, getInitials } from "./Message";
@@ -86,6 +86,17 @@ export default function TextMessage({
 		}
 	};
 
+	async function handleBan() {
+		try {
+			await API.post("/chats/ban-member", {
+				member: sender,
+				chatId: chat,
+			});
+		} catch (error) {
+			console.error("Error banning user:", error);
+		}
+	}
+
 	return (
 		<div
 			className={`flex items-center gap-3 mx-3 my-1 p-2 rounded-2xl ${
@@ -158,13 +169,19 @@ export default function TextMessage({
 									align="end"
 									className="w-40"
 								>
-									<DropdownMenuItem
+									{isOwnMessage?<DropdownMenuItem
 										onClick={handleEdit}
 										className="cursor-pointer"
 									>
 										<Edit className="h-4 w-4 mr-2" />
 										Edit message
-									</DropdownMenuItem>
+									</DropdownMenuItem>:<DropdownMenuItem
+										onClick={handleBan}
+										className="cursor-pointer"
+									>
+										<Ban className="h-4 w-4 mr-2" />
+										Ban user
+									</DropdownMenuItem>}
 									<DropdownMenuItem
 										onClick={handleDelete}
 										className="cursor-pointer text-red-600 focus:text-red-600 dark:text-red-400"

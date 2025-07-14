@@ -22,7 +22,7 @@ export default function Inputfield() {
 		try {
 			const MessageToSend = {
 				chat: id,
-				sender: user?.id || "sahil",
+				sender: "sahil",
 				content: newMessage,
 				profile: user?.imageUrl,
 				firstname: user?.firstName,

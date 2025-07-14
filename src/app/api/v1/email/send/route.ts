@@ -9,6 +9,18 @@ import validateKeyAndLimit, { isValidAuthResult } from "@/app/api/validatekey";
 export async function POST(request: Request){
     try {
         const req = await request.json();
+        //validate the emails you want to send
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        for (let i = 0; i < req.to.length; i++) {
+            const email = req.to[i];
+            if (!regex.test(email)) {
+                return new NextResponse(JSON.stringify({
+                    error:`${email} is not a valid email`,
+                    success: false,
+                }), { status: 429 }); 
+            }
+        }
+
         const redis = Redis.fromEnv();
 
         //validate the api key, rate limits and check permissions
@@ -26,7 +38,8 @@ export async function POST(request: Request){
         const existingRequest = await redis.get(duplicateKey);
         if (existingRequest) {
             return new NextResponse(JSON.stringify({
-                error: "Duplicate request detected. Please wait before sending the same email again."
+                error: "Duplicate request detected. Please wait before sending the same email again.",
+                success: false,
             }), { status: 429 });
         }
         await redis.setex(duplicateKey, 10, "sent");
@@ -40,7 +53,8 @@ export async function POST(request: Request){
         const { success: dailySuccess } = await dailyRatelimit.limit(dailyUsageKey);
         if (!dailySuccess) {
             return new NextResponse(JSON.stringify({
-                error: "Daily email limit exceeded. Please try again tomorrow."
+                error: "Daily email limit exceeded. Please try again tomorrow.",
+                success:false,
             }), { status: 429 });
         }
 
@@ -49,15 +63,19 @@ export async function POST(request: Request){
             to:req.to,
             from: req.from || "",
             subject: req.subject || "No Subject",
-            body: req.body || "No content provided",
+            html: req.html || "No content provided",
         })
 
         //send a success response
         return new NextResponse(JSON.stringify({
             message: "Email sent successfully",
-            req:request.headers,
+            success:true
         }),{status: 200});
     } catch (error) {
         console.log("error in email send route:", error);
+        return new NextResponse(JSON.stringify({
+            error: "Something went wrong. This is most likely a problem from our end",
+            success:false,
+        }), { status: 500 });
     }
 }
