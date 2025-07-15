@@ -13,10 +13,12 @@ import supabaseClient from "@/lib/supabase";
 import { useSession } from "@clerk/nextjs";
 import { useState } from "react";
 import { toast } from "sonner";
+import SendEmailButton from "@/components/SendEmailButton";
 
 export default function ActionButton({ table }: { table: any }) {
     const {session} = useSession();
     const [open, setOpen] = useState(false);
+    const selectedEmails = table.getSelectedRowModel().rows.map((obj:any)=>obj.original.email);
 	async function deleteAction() {
 		table.getSelectedRowModel().rows.map(async(row: any) => {
 			const rowToDelete = row.original.id;
@@ -42,6 +44,7 @@ export default function ActionButton({ table }: { table: any }) {
                     Delete
                 </DropdownMenuLabel>
 				<DropdownMenuSeparator />
+                <SendEmailButton emails={selectedEmails}/>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

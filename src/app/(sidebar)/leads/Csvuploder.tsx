@@ -86,7 +86,7 @@ export default function CsvUploader() {
 			}
 
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-			const expectedHeaders = ['name', 'email', 'source', 'note'];
+			const expectedHeaders = ['name', 'email', 'source'];
 			// Check if all required headers are present
 			const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
 			if (missingHeaders.length > 0) {

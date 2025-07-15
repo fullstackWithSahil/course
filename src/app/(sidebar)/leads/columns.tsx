@@ -14,9 +14,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Editnote from "./Editnote";
+import SendEmailButton from "@/components/SendEmailButton";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -99,7 +99,6 @@ export const columns: ColumnDef<LeadType>[] = [
 ];
 
 function ColumnIteam({ lead }: { lead: any }) {
-	const router = useRouter();
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -121,13 +120,7 @@ function ColumnIteam({ lead }: { lead: any }) {
 						Copy email
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem
-						onClick={() => {
-							router.push(`/email/${lead.email}}`);
-						}}
-					>
-						Send email
-					</DropdownMenuItem>
+					<SendEmailButton emails={[lead.email||""]}/>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onClick={() => {
