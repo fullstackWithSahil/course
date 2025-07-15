@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
 import SendEmailButton from "@/components/SendEmailButton";
+import SendMessageButton from "./SendMessageButton";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -116,13 +117,7 @@ function CellIteam({student}:{student:any}) {
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<SendEmailButton emails={[student.email]}/>
-				<DropdownMenuItem
-					onClick={() => {
-						router.push(`/chats/${student.student}`);
-					}}
-				>
-					Send email
-				</DropdownMenuItem>
+				<SendMessageButton students={[student.student]}/>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
