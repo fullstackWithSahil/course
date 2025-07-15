@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseClient } from "@/lib/server/supabase";
-import { Redis } from "@upstash/redis";
 import validateKeyAndLimit, { ErrorResponse, isValidAuthResult } from "@/app/api/validatekey";
 
 

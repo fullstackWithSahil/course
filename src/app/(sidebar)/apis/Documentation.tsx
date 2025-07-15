@@ -26,11 +26,8 @@ Authorization: Bearer YOUR_API_KEY
 {
   "to": "student@example.com",
   "subject": "Welcome to the course!",
-  "template": "welcome",
-  "variables": {
-    "name": "John Doe",
-    "course": "Web Development"
-  }
+  "from": "teacher@example.com",
+  "html":"<p>this is an example</P>
 }`}
                     className="text-sm font-mono"
                   />
@@ -44,6 +41,25 @@ Authorization: Bearer YOUR_API_KEY`}
                     className="text-sm font-mono"
                   />
                 </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Send Template Email</h4>
+                  <Textarea
+                    readOnly
+                    value={`POST /api/v1/email/template
+Authorization: Bearer YOUR_API_KEY
+
+{
+  "to": "student@example.com",
+  "subject": "Welcome to the course!",
+  "template": "welcome",
+  "variables": {
+    "name": "John Doe",
+    "course": "Web Development"
+  }
+}`}
+                    className="text-sm font-mono"
+                  />
+                </div>
               </CardContent>
             </Card>
 
@@ -51,38 +67,46 @@ Authorization: Bearer YOUR_API_KEY`}
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Students API
+                  Leads API
                 </CardTitle>
-                <CardDescription>Manage your student database</CardDescription>
+                <CardDescription>Manage your leads database</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold mb-2">Add Student</h4>
+                  <h4 className="font-semibold mb-2">Add Lead</h4>
                   <Textarea
                     readOnly
-                    value={`POST /api/v1/students
+                    value={`POST /api/v1/leads
 Authorization: Bearer YOUR_API_KEY
 
 {
-  "email": "student@example.com",
-  "name": "John Doe",
-  "course": "web-development",
-  "status": "enrolled"
+  "name": "john doe",
+  "email": "john@gmail.com",
+  "source": "website" (optional),
+  "note":"Might be intrested" (optional)
 }`}
                     className="text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Update Student</h4>
+                  <h4 className="font-semibold mb-2">Update Lead</h4>
                   <Textarea
                     readOnly
                     value={`PUT /api/v1/students/:id
 Authorization: Bearer YOUR_API_KEY
 
 {
-  "status": "completed",
-  "progress": 100
+  fields you want to update
 }`}
+                    className="text-sm font-mono"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Delete Lead</h4>
+                  <Textarea
+                    readOnly
+                    value={`DELETE /api/v1/students/:id
+Authorization: Bearer YOUR_API_KEY`}
                     className="text-sm font-mono"
                   />
                 </div>

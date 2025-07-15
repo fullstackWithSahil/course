@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
 import SendEmailButton from "@/components/SendEmailButton";
 import SendMessageButton from "./SendMessageButton";
 

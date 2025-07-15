@@ -43,10 +43,9 @@ export async function POST(request:NextRequest){
             .insert({
                 name: body.name,
                 email: body.email,
-                phone: body.phone,
-                message: body.message,
                 teacher: validation.teacher,
                 source: body.source || "unknown",
+                note:body.note
             })
             .select('*')
             .single();
